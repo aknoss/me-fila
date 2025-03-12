@@ -1,14 +1,22 @@
-import express from "express";
+import express, { Request, Response, NextFunction } from "express";
 import dotenv from "dotenv";
 import morgan from "morgan";
+import { hostRoutes } from "./routes/hostRoutes";
 
 dotenv.config();
 
 const app = express();
 app.use(morgan("common"));
 
-app.get("/", (req, res) => {
-  res.send("Hello World");
+app.use("/host", hostRoutes);
+
+app.get("/", (_req, res, next) => {
+  res.json({ message: "Welcome to the me-fila API" });
+});
+
+app.use((error: Error, _req: Request, res: Response, _next: NextFunction) => {
+  console.error(error.stack);
+  res.status(500).json({ message: "Something went wrong!" });
 });
 
 const port = process.env.PORT;
