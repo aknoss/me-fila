@@ -1,14 +1,14 @@
 import express, { Request, Response, NextFunction } from "express";
 import dotenv from "dotenv";
 import morgan from "morgan";
-import { hostRoutes } from "./routes/hostRoutes";
+import { roomRoutes } from "./routes/roomRoutes";
 
 dotenv.config();
 
 const app = express();
 app.use(morgan("common"));
 
-app.use("/host", hostRoutes);
+app.use("/room", roomRoutes);
 
 app.get("/", (_req, res, next) => {
   res.json({
