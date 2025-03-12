@@ -11,7 +11,9 @@ app.use(morgan("common"));
 app.use("/host", hostRoutes);
 
 app.get("/", (_req, res, next) => {
-  res.json({ message: "Welcome to the me-fila API" });
+  res.json({
+    message: "Welcome to the Me Fila API. Check docs for how to use.",
+  });
 });
 
 app.use((error: Error, _req: Request, res: Response, _next: NextFunction) => {
