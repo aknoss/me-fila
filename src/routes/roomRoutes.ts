@@ -7,7 +7,8 @@ import {
 
 const roomRoutes = express.Router();
 
-roomRoutes.post("/:hostId", createRoom);
+roomRoutes.post("/", createRoom);
+
 roomRoutes.get("/:roomId", getRoom);
 roomRoutes.delete("/:roomId", deleteRoom);
 
