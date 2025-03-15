@@ -8,37 +8,31 @@ type CreateRoomResponse = ApiResponse<Room>;
 const prisma = new PrismaClient();
 
 export async function createRoom(
-  req: Request,
-  res: Response<CreateRoomResponse>,
-  next: NextFunction
+  _req: Request,
+  res: Response<CreateRoomResponse>
 ) {
   try {
-    const hostId = req.body.hostId;
-    const host: User | null = await prisma.user.findUnique({
-      where: { id: hostId },
+    const result = await prisma.$transaction(async (tx) => {
+      const host: User | null = await tx.user.create({ data: {} });
+      const room = await tx.room.create({ data: { hostId: host.id } });
+      return { room };
     });
 
-    if (!host) {
-      logger.error("Cannot create room", {
-        error: {
-          message: `User id not found: ${hostId}`,
-          code: 404,
-        },
-      });
-      res.status(404).json({
-        data: null,
-        error: { message: `User id not found: ${hostId}`, code: 404 },
-      });
-    }
-
-    const room = await prisma.room.create({
-      data: { hostId },
+    logger.info("Room created successfully", { data: result.room });
+    res.status(201).json({ data: result.room, error: null });
+  } catch (err) {
+    const error = err as Error;
+    logger.error("Failed to create a new room", {
+      error: {
+        message: error.message,
+        code: 500,
+        stack: error.stack,
+      },
     });
-
-    logger.info("Room created successfully", { data: room });
-    res.status(201).json({ data: room, error: null });
-  } catch (error) {
-    next(error);
+    res.status(500).json({
+      data: null,
+      error: { message: "Failed to create a new room", code: 500 },
+    });
   }
 }
 
