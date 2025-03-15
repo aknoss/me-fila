@@ -3,11 +3,16 @@ import dotenv from "dotenv";
 import morgan from "morgan";
 import { roomRoutes } from "./routes/roomRoutes";
 import { ApiResponse } from "./controllers/types";
+import { logger } from "./logger";
 
 dotenv.config();
-
 const app = express();
-app.use(morgan("common"));
+
+app.use(
+  morgan("tiny", {
+    stream: { write: (message) => logger.info(message.trim()) },
+  })
+);
 
 app.use("/room", roomRoutes);
 
