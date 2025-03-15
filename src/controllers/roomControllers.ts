@@ -1,6 +1,7 @@
 import { PrismaClient, Room, User } from "@prisma/client";
 import { NextFunction, Request, Response } from "express";
 import { ApiResponse } from "./types";
+import { logger } from "../logger";
 
 type CreateRoomResponse = ApiResponse<Room>;
 
@@ -18,6 +19,12 @@ export async function createRoom(
     });
 
     if (!host) {
+      logger.error("Cannot create room", {
+        error: {
+          message: `User id not found: ${hostId}`,
+          code: 404,
+        },
+      });
       res.status(404).json({
         data: null,
         error: { message: `User id not found: ${hostId}`, code: 404 },
@@ -28,7 +35,7 @@ export async function createRoom(
       data: { hostId },
     });
 
-    console.log("Room created: ", room.id);
+    logger.info("Room created successfully", { data: room });
     res.status(201).json({ data: room, error: null });
   } catch (error) {
     next(error);

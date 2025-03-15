@@ -30,13 +30,18 @@ app.use(
     res: Response<ApiResponse<null>>,
     _next: NextFunction
   ) => {
-    console.error(error.stack);
+    logger.error("Something went wrong!", {
+      error: {
+        message: error.message,
+        code: 500,
+        stack: error.stack,
+      },
+    });
     res.status(500).json({
       data: null,
       error: {
         message: "Something went wrong!",
         code: 500,
-        stack: error.stack,
       },
     });
   }
