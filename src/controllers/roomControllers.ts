@@ -1,16 +1,12 @@
-import { PrismaClient, Room, User } from "@prisma/client";
-import { NextFunction, Request, Response } from "express";
-import { ApiResponse } from "./types";
+import { PrismaClient, Room } from "@prisma/client";
+import { Request, Response } from "express";
+import { ApiResponse } from "../types";
 import { logger } from "../logger";
-
-type CreateRoomResponse = ApiResponse<Room>;
 
 const prisma = new PrismaClient();
 
-export async function createRoom(
-  _req: Request,
-  res: Response<CreateRoomResponse>
-) {
+type CreateRoomResponse = ApiResponse<Room>;
+export async function createRoom(_req: Request, res: CreateRoomResponse) {
   try {
     const result = await prisma.$transaction(async (tx) => {
       const host = await tx.user.create({ data: {} });
@@ -36,6 +32,23 @@ export async function createRoom(
   }
 }
 
-export function getRoom(req: Request, res: Response) {}
+export async function getRoom(req: Request, res: Response) {}
 
-export function deleteRoom(req: Request, res: Response) {}
+type DeleteRoomParams = { roomId: string };
+export async function deleteRoom(
+  req: Request<DeleteRoomParams>,
+  res: Response
+) {
+  try {
+    const roomId = req.params.roomId;
+    const room = await prisma.room.findUnique({ where: { id: roomId } });
+    if (!room) {
+      const error = {
+        message: `Failed to find room with specified id: ${roomId}`,
+        code: 404,
+      };
+      logger.error({ error });
+      res.status(500).json({ data: null, error });
+    }
+  } catch (err) {}
+}

@@ -2,7 +2,7 @@ import express, { Request, Response, NextFunction } from "express";
 import dotenv from "dotenv";
 import morgan from "morgan";
 import { roomRoutes } from "./routes/roomRoutes";
-import { ApiResponse } from "./controllers/types";
+import { ApiResponse } from "./types";
 import { logger } from "./logger";
 
 dotenv.config();
@@ -16,7 +16,7 @@ app.use(
 
 app.use("/room", roomRoutes);
 
-app.get("/", (_req, res: Response<ApiResponse<{ message: string }>>) => {
+app.get("/", (_req, res: ApiResponse<{ message: string }>) => {
   res.json({
     data: { message: "Welcome to the Me Fila API. Check docs for how to use." },
     error: null,
@@ -27,14 +27,14 @@ app.use(
   (
     error: Error,
     _req: Request,
-    res: Response<ApiResponse<null>>,
+    res: ApiResponse<null>,
     _next: NextFunction
   ) => {
     logger.error("Something went wrong!", {
       error: {
         message: error.message,
         code: 500,
-        stack: error.stack,
+        stack: process.env.NODE_ENV === "development" ? error.stack : undefined,
       },
     });
     res.status(500).json({
