@@ -13,7 +13,7 @@ export async function createRoom(
 ) {
   try {
     const result = await prisma.$transaction(async (tx) => {
-      const host: User | null = await tx.user.create({ data: {} });
+      const host = await tx.user.create({ data: {} });
       const room = await tx.room.create({ data: { hostId: host.id } });
       return { room };
     });
@@ -21,12 +21,12 @@ export async function createRoom(
     logger.info("Room created successfully", { data: result.room });
     res.status(201).json({ data: result.room, error: null });
   } catch (err) {
-    const error = err as Error;
+    const error = err instanceof Error ? err : new Error("Unknown error");
     logger.error("Failed to create a new room", {
       error: {
         message: error.message,
         code: 500,
-        stack: error.stack,
+        stack: process.env.NODE_ENV === "development" ? error.stack : undefined,
       },
     });
     res.status(500).json({
