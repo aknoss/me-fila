@@ -37,7 +37,7 @@ export async function authenticateHost(
       next();
     } else {
       const error = {
-        message: `Unauthorized: Invalid token`,
+        message: `Unauthorized: Wrong token for this room`,
         code: 401,
       };
       logger.error({ error });
@@ -45,7 +45,7 @@ export async function authenticateHost(
     }
   } catch (err) {
     const error = {
-      message: "An error occurred while verifying the token",
+      message: "Unauthorized: Invalid token",
       code: 500,
     };
     res.status(500).json({ data: null, error });

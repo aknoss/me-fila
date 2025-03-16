@@ -9,15 +9,15 @@ const HOST_JWT_SECRET = getEnv("HOST_JWT_SECRET");
 
 const prisma = new PrismaClient();
 
-type CreateRoomRequestBody = { roomName: string };
+type CreateRoomRequestBody = { name: string };
 type CreateRoomResponse = ApiResponse<{ room: Room; hostToken: string }>;
 export async function createRoom(
   req: Request<{}, {}, CreateRoomRequestBody>,
   res: CreateRoomResponse
 ) {
   try {
-    const roomName = req.body.roomName;
-    if (!roomName) {
+    const name = req.body.name;
+    if (!name) {
       const error = {
         message: "A name for the room is required",
         code: 400,
@@ -26,7 +26,7 @@ export async function createRoom(
       res.status(500).json({ data: null, error });
       return;
     }
-    const room = await prisma.room.create({ data: { name: roomName } });
+    const room = await prisma.room.create({ data: { name } });
     const hostToken = jwt.sign({ roomId: room.id }, HOST_JWT_SECRET!);
 
     logger.info("Room created successfully", { data: room });
