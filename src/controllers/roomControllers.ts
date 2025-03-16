@@ -9,13 +9,13 @@ const HOST_JWT_SECRET = getEnv("HOST_JWT_SECRET");
 
 const prisma = new PrismaClient();
 
-type CreateRoomResponse = ApiResponse<Room>;
+type CreateRoomResponse = ApiResponse<{ room: Room; hostToken: string }>;
 export async function createRoom(_req: Request, res: CreateRoomResponse) {
   try {
     const room = await prisma.room.create({ data: {} });
     logger.info("Room created successfully", { data: room });
     const hostToken = jwt.sign({ roomId: room.id }, HOST_JWT_SECRET!);
-    res.status(201).json({ data: room, error: null });
+    res.status(201).json({ data: { room, hostToken }, error: null });
   } catch (err) {
     const error = err instanceof Error ? err : new Error("Unknown error");
     logger.error("Failed to create a new room", { error });
