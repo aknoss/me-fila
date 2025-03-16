@@ -1,4 +1,4 @@
-import { Request, Response } from "express";
+import { NextFunction, Request, Response } from "express";
 import jwt from "jsonwebtoken";
 import { PrismaClient, Room } from "@prisma/client";
 import { ApiResponse } from "../types";
@@ -51,15 +51,15 @@ export async function deleteRoom(
 ) {
   try {
     const roomId = req.params.roomId;
-    const room = await prisma.room.findUnique({ where: { id: roomId } });
-
-    if (!room) {
-      const error = {
-        message: `Failed to find room with id: ${roomId}`,
-        code: 404,
-      };
-      logger.error({ error });
-      res.status(500).json({ data: null, error });
-    }
-  } catch (err) {}
+    await prisma.room.delete({ where: { id: roomId } });
+    logger.info("Room deleted successfully");
+    res.status(204).json();
+  } catch (err) {
+    const error = err instanceof Error ? err : new Error("Unknown error");
+    logger.error("Could not find room to delete", { error });
+    res.status(404).json({
+      data: null,
+      error: { message: "Could not find room to delete", code: 500 },
+    });
+  }
 }
