@@ -9,12 +9,27 @@ const HOST_JWT_SECRET = getEnv("HOST_JWT_SECRET");
 
 const prisma = new PrismaClient();
 
+type CreateRoomRequestBody = { roomName: string };
 type CreateRoomResponse = ApiResponse<{ room: Room; hostToken: string }>;
-export async function createRoom(_req: Request, res: CreateRoomResponse) {
+export async function createRoom(
+  req: Request<{}, {}, CreateRoomRequestBody>,
+  res: CreateRoomResponse
+) {
+  const roomName = req.body.roomName;
+  if (!roomName) {
+    const error = {
+      message: "A name for the room is required",
+      code: 400,
+    };
+    logger.error(error);
+    res.status(500).json({ data: null, error });
+  }
+
   try {
-    const room = await prisma.room.create({ data: {} });
-    logger.info("Room created successfully", { data: room });
+    const room = await prisma.room.create({ data: { name: roomName } });
     const hostToken = jwt.sign({ roomId: room.id }, HOST_JWT_SECRET!);
+
+    logger.info("Room created successfully", { data: room });
     res.status(201).json({ data: { room, hostToken }, error: null });
   } catch (err) {
     const error = err instanceof Error ? err : new Error("Unknown error");
@@ -35,11 +50,9 @@ export async function deleteRoom(
   res: ApiResponse
 ) {
   try {
-    const hostId = null;
-    if (!hostId) {
-    }
     const roomId = req.params.roomId;
     const room = await prisma.room.findUnique({ where: { id: roomId } });
+
     if (!room) {
       const error = {
         message: `Failed to find room with id: ${roomId}`,

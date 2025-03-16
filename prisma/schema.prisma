@@ -22,5 +22,6 @@ model User {
 
 model Room {
   id           String @id @default(uuid())
+  name          String?
   participants User[] @relation("ParticipatedRoom")
 }
