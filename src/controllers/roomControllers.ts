@@ -27,7 +27,7 @@ type DeleteRoomRequestParams = { roomId: string };
 type DeleteRoomRequestBody = { hostId: string };
 export async function deleteRoom(
   req: Request<DeleteRoomRequestParams, {}, DeleteRoomRequestBody>,
-  res: Response
+  res: ApiResponse
 ) {
   try {
     const hostId = null;

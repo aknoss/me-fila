@@ -49,5 +49,5 @@ app.use(
 
 const port = process.env.PORT;
 app.listen(port, () => {
-  console.log(`[server]: Server is running port ${port}`);
+  logger.info(`Server is running port ${port}`);
 });
