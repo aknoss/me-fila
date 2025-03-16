@@ -24,6 +24,7 @@ export async function authenticateHost(
     };
     logger.error(error);
     res.status(401).json({ data: null, error });
+    return;
   }
 
   // Extract the token from "Bearer token"

@@ -15,17 +15,17 @@ export async function createRoom(
   req: Request<{}, {}, CreateRoomRequestBody>,
   res: CreateRoomResponse
 ) {
-  const roomName = req.body.roomName;
-  if (!roomName) {
-    const error = {
-      message: "A name for the room is required",
-      code: 400,
-    };
-    logger.error(error);
-    res.status(500).json({ data: null, error });
-  }
-
   try {
+    const roomName = req.body.roomName;
+    if (!roomName) {
+      const error = {
+        message: "A name for the room is required",
+        code: 400,
+      };
+      logger.error(error);
+      res.status(500).json({ data: null, error });
+      return;
+    }
     const room = await prisma.room.create({ data: { name: roomName } });
     const hostToken = jwt.sign({ roomId: room.id }, HOST_JWT_SECRET!);
 
