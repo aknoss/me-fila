@@ -1,17 +1,12 @@
-import { Request, Response, NextFunction } from "express";
+import { Request, NextFunction } from "express";
 import jwt from "jsonwebtoken";
 import { ApiResponse } from "../types";
 import { logger } from "../logger";
+import { getEnv } from "../env";
 
-const HOST_JWT_SECRET = process.env.HOST_JWT_SECRET;
+const HOST_JWT_SECRET = getEnv("HOST_JWT_SECRET");
 
 type AuthenticatedRouteRequestParams = { roomId: string };
-
-if (!HOST_JWT_SECRET) {
-  throw new Error(
-    "HOST_JWT_SECRET is not defined in the environment variables."
-  );
-}
 
 // Some routes require the host to be authenticated
 export async function authenticateHost(
