@@ -27,7 +27,7 @@ export async function createRoom(
       return;
     }
     const room = await prisma.room.create({ data: { name } });
-    const hostToken = jwt.sign({ roomId: room.id }, HOST_JWT_SECRET!);
+    const hostToken = jwt.sign(room.id, HOST_JWT_SECRET!);
 
     logger.info("Room created successfully", { data: room });
     res.status(201).json({ data: { room, hostToken }, error: null });
