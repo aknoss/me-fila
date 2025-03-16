@@ -16,14 +16,11 @@ datasource db {
 model User {
   id            String    @id @default(uuid())
   name          String?
-  hostedRoom    Room?  @relation("HostedRoom")
   participatedRoomId String?
   participatedRoom Room? @relation("ParticipatedRoom", fields: [participatedRoomId], references: [id])
 }
 
 model Room {
   id           String @id @default(uuid())
-  hostId       String    @unique
-  host         User   @relation("HostedRoom", fields: [hostId], references: [id])
   participants User[] @relation("ParticipatedRoom")
 }
