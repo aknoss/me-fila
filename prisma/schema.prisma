@@ -21,7 +21,7 @@ model User {
 }
 
 model Room {
-  id           String @id @default(uuid())
+  id           String @id // Nano ID is generated in the application
   name         String
   participants User[] @relation("ParticipatedRoom")
 }
