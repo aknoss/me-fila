@@ -62,7 +62,7 @@ export async function deleteRoom(
     logger.error("Could not find room to delete", { error });
     res.status(404).json({
       data: null,
-      error: { message: "Could not find room to delete", code: 500 },
+      error: { message: "Could not find room to delete", code: 404 },
     });
   }
 }
