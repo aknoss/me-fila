@@ -56,7 +56,7 @@ export async function deleteRoom(
     const roomId = req.params.roomId;
     await prisma.room.delete({ where: { id: roomId } });
     logger.info("Room deleted successfully");
-    res.status(204).end();
+    res.status(200).json({ data: null, error: null });
   } catch (err) {
     const error = err instanceof Error ? err : new Error("Unknown error");
     logger.error("Could not find room to delete", { error });
