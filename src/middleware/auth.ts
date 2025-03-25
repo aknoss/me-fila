@@ -48,6 +48,7 @@ export async function authenticateHost(
       message: "Unauthorized: Invalid token",
       code: 500,
     };
+    logger.error({ error });
     res.status(500).json({ data: null, error });
   }
 }
