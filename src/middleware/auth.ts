@@ -6,17 +6,12 @@ import { getEnv } from "../env";
 
 const HOST_JWT_SECRET = getEnv("HOST_JWT_SECRET");
 
-type AuthenticatedRouteRequestParams = { roomId: string };
-
-// Some routes require the host to be authenticated
 export async function authenticateHost(
-  req: Request<AuthenticatedRouteRequestParams>,
+  req: Request,
   res: ApiResponse,
   next: NextFunction
 ) {
   const authHeader = req.headers["authorization"];
-  const roomId = req.params.roomId;
-
   if (!authHeader || !authHeader.includes("Bearer ")) {
     const error = {
       message: "Unauthorized: Missing token",
@@ -31,18 +26,9 @@ export async function authenticateHost(
   const hostToken = authHeader!.split(" ")[1];
 
   try {
-    const decoded = jwt.verify(hostToken, HOST_JWT_SECRET!);
-
-    if (decoded === roomId) {
-      next();
-    } else {
-      const error = {
-        message: `Unauthorized: Wrong token for this room`,
-        code: 401,
-      };
-      logger.error({ error });
-      res.status(401).json({ data: null, error });
-    }
+    const roomId = jwt.verify(hostToken, HOST_JWT_SECRET!) as string;
+    req.roomId = roomId;
+    next();
   } catch (err) {
     const error = {
       message: "Unauthorized: Invalid token",

@@ -46,14 +46,9 @@ export async function createRoom(
 
 export async function getRoom(req: Request, res: Response) {}
 
-type DeleteRoomRequestParams = { roomId: string };
-type DeleteRoomRequestBody = { hostId: string };
-export async function deleteRoom(
-  req: Request<DeleteRoomRequestParams, {}, DeleteRoomRequestBody>,
-  res: ApiResponse
-) {
+export async function deleteRoom(req: Request, res: ApiResponse) {
   try {
-    const roomId = req.params.roomId;
+    const roomId = req.roomId;
     await prisma.room.delete({ where: { id: roomId } });
     logger.info("Room deleted successfully");
     res.status(200).json({ data: null, error: null });

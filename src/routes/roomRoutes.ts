@@ -10,7 +10,7 @@ const roomRoutes = express.Router();
 
 roomRoutes.post("/", createRoom);
 
-roomRoutes.get("/:roomId", getRoom);
-roomRoutes.delete("/:roomId", authenticateHost, deleteRoom);
+roomRoutes.get("/", getRoom);
+roomRoutes.delete("/", authenticateHost, deleteRoom);
 
 export { roomRoutes };
