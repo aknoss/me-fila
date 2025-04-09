@@ -7,7 +7,6 @@ import { getEnv } from "../env";
 import { nanoid } from "nanoid";
 
 const HOST_JWT_SECRET = getEnv("HOST_JWT_SECRET");
-
 const prisma = new PrismaClient();
 
 type CreateRoomRequestBody = { name: string };
