@@ -76,10 +76,11 @@ export async function joinRoom(
 
     if (!room) {
       logger.error("Could not find room to join", { roomId });
-      return res.status(404).json({
+      res.status(404).json({
         data: null,
         error: { message: "Could not find room to join", code: 404 },
       });
+      return;
     }
 
     const updatedUser = await prisma.user.update({
