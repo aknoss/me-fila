@@ -20,7 +20,7 @@ export async function createUser(
     const user = await prisma.user.create({ data: { name } });
     const userToken = jwt.sign(user.id, USER_JWT_SECRET!);
 
-    logger.info("Room created successfully", { data: user });
+    logger.info("User created successfully", { data: user });
     res.status(201).json({ data: { user, userToken }, error: null });
   } catch (err) {
     const error = err instanceof Error ? err : new Error("Unknown error");
