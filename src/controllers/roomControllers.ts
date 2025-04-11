@@ -1,10 +1,10 @@
 import { Request, Response } from "express";
 import jwt from "jsonwebtoken";
+import { nanoid } from "nanoid";
 import { PrismaClient, Room, User } from "@prisma/client";
 import { ApiResponse } from "../types";
 import { logger } from "../logger";
 import { getEnv } from "../env";
-import { nanoid } from "nanoid";
 
 const HOST_JWT_SECRET = getEnv("HOST_JWT_SECRET");
 const prisma = new PrismaClient();
@@ -57,45 +57,6 @@ export async function deleteRoom(req: Request, res: ApiResponse) {
     res.status(404).json({
       data: null,
       error: { message: "Could not find room to delete", code: 404 },
-    });
-  }
-}
-
-type JoinRoomParams = { roomId: string };
-type JoinRoomResponse = ApiResponse<User>;
-export async function joinRoom(
-  req: Request<JoinRoomParams>,
-  res: JoinRoomResponse
-) {
-  const roomId = req.params.roomId;
-  const userId = req.userId;
-  try {
-    const room = await prisma.room.findUnique({
-      where: { id: roomId },
-    });
-
-    if (!room) {
-      logger.error("Could not find room to join", { roomId });
-      res.status(404).json({
-        data: null,
-        error: { message: "Could not find room to join", code: 404 },
-      });
-      return;
-    }
-
-    const updatedUser = await prisma.user.update({
-      where: { id: userId },
-      data: { participatedRoomId: roomId },
-    });
-
-    logger.error("User joined room successfully", { updatedUser });
-    res.status(200).json({ data: updatedUser, error: null });
-  } catch (err) {
-    const error = err instanceof Error ? err : new Error("Unknown error");
-    logger.error("Could not insert user into the room", { error });
-    res.status(500).json({
-      data: null,
-      error: { message: "Could not insert user into the room", code: 404 },
     });
   }
 }
