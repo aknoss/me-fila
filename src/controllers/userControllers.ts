@@ -84,10 +84,7 @@ export async function joinRoom(
   const roomId = req.params.roomId;
   const userId = req.userId;
   try {
-    const roomExists =
-      (await prisma.room.count({
-        where: { id: roomId },
-      })) > 0;
+    const roomExists = (await prisma.room.count({ where: { id: roomId } })) > 0;
 
     if (!roomExists) {
       logger.error("Could not find room to join", { roomId });
