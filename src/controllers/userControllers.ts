@@ -78,10 +78,10 @@ export async function deleteUser(
 type JoinRoomParams = { roomId: string };
 type JoinRoomResponse = ApiResponse<User>;
 export async function joinRoom(
-  req: Request<JoinRoomParams>,
+  req: Request<{}, {}, JoinRoomParams>,
   res: JoinRoomResponse
 ) {
-  const roomId = req.params.roomId;
+  const roomId = req.body.roomId;
   const userId = req.userId;
   try {
     const roomExists = (await prisma.room.count({ where: { id: roomId } })) > 0;

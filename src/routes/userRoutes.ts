@@ -11,6 +11,6 @@ const userRoutes = express.Router();
 userRoutes.post("/", createUser);
 userRoutes.delete("/", authenticateUser, deleteUser);
 
-userRoutes.patch("/:roomId/join", authenticateUser, joinRoom);
+userRoutes.patch("/join", authenticateUser, joinRoom);
 
 export { userRoutes };
