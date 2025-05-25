@@ -5,6 +5,7 @@ import morgan from "morgan";
 import { roomRoutes } from "./routes/roomRoutes";
 import { ApiResponse } from "./types";
 import { logger } from "./logger";
+import { userRoutes } from "./routes/userRoutes";
 
 dotenv.config();
 const app = express();
@@ -17,6 +18,7 @@ app.use(
 );
 
 app.use("/room", roomRoutes);
+app.use("/user", userRoutes);
 
 app.get("/", (_req, res: ApiResponse<{ message: string }>) => {
   res.json({
