@@ -43,7 +43,31 @@ export async function createRoom(
   }
 }
 
-export async function getRoom(req: Request, res: Response) {}
+type GetRoomResponse = ApiResponse<{ room: Room }>;
+export async function getRoom(req: Request, res: GetRoomResponse) {
+  const roomId = req.roomId;
+  try {
+    const room = await prisma.room.findFirst({ where: { id: roomId } });
+    if (!room) {
+      const error = {
+        message: "Could not find room",
+        code: 404,
+      };
+      logger.error(error);
+      res.status(500).json({ data: null, error });
+      return;
+    }
+    logger.info("Room found successfully", { data: room });
+    res.status(200).json({ data: { room }, error: null });
+  } catch (err) {
+    const error = err instanceof Error ? err : new Error("Unknown error");
+    logger.error("Could not find room", { error });
+    res.status(404).json({
+      data: null,
+      error: { message: "Could not find room to delete", code: 404 },
+    });
+  }
+}
 
 export async function deleteRoom(req: Request, res: ApiResponse) {
   const roomId = req.roomId;
