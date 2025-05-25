@@ -9,7 +9,6 @@ import { authenticateHost, authenticateUser } from "../middleware/auth";
 const roomRoutes = express.Router();
 
 roomRoutes.post("/", createRoom);
-
 roomRoutes.get("/", authenticateHost, getRoom);
 roomRoutes.delete("/", authenticateHost, deleteRoom);
 

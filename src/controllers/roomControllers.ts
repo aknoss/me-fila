@@ -47,7 +47,10 @@ type GetRoomResponse = ApiResponse<{ room: Room }>;
 export async function getRoom(req: Request, res: GetRoomResponse) {
   const roomId = req.roomId;
   try {
-    const room = await prisma.room.findFirst({ where: { id: roomId } });
+    const room = await prisma.room.findFirst({
+      where: { id: roomId },
+      include: { participants: true },
+    });
     if (!room) {
       const error = {
         message: "Could not find room",
