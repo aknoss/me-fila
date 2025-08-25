@@ -13,7 +13,7 @@ type CreateRoomRequestBody = { name: string };
 type CreateRoomResponse = ApiResponse<{ room: Room; hostToken: string }>;
 export async function createRoom(
   req: Request<{}, {}, CreateRoomRequestBody>,
-  res: CreateRoomResponse
+  res: CreateRoomResponse,
 ) {
   try {
     const name = req.body.name;

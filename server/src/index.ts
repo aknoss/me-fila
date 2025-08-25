@@ -1,5 +1,7 @@
-import express, { Request, Response, NextFunction } from "express";
 import dotenv from "dotenv";
+dotenv.config();
+
+import express, { Request, Response, NextFunction } from "express";
 import cors from "cors";
 import morgan from "morgan";
 import { roomRoutes } from "./routes/roomRoutes";
@@ -8,15 +10,13 @@ import { logger } from "./logger";
 import { userRoutes } from "./routes/userRoutes";
 
 const PORT = 5000;
-
-dotenv.config();
 const app = express();
 app.use(express.json());
 app.use(cors());
 app.use(
   morgan("tiny", {
     stream: { write: (message) => logger.info(message.trim()) },
-  }),
+  })
 );
 
 app.use("/room", roomRoutes);
@@ -34,7 +34,7 @@ app.use(
     error: Error,
     _req: Request,
     res: ApiResponse<null>,
-    _next: NextFunction,
+    _next: NextFunction
   ) => {
     logger.error("Something went wrong!", {
       error: {
@@ -50,7 +50,7 @@ app.use(
         code: 500,
       },
     });
-  },
+  }
 );
 
 app.listen(PORT, () => {
