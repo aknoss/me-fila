@@ -7,6 +7,8 @@ import { ApiResponse } from "./types";
 import { logger } from "./logger";
 import { userRoutes } from "./routes/userRoutes";
 
+const PORT = 5000;
+
 dotenv.config();
 const app = express();
 app.use(express.json());
@@ -14,7 +16,7 @@ app.use(cors());
 app.use(
   morgan("tiny", {
     stream: { write: (message) => logger.info(message.trim()) },
-  })
+  }),
 );
 
 app.use("/room", roomRoutes);
@@ -32,7 +34,7 @@ app.use(
     error: Error,
     _req: Request,
     res: ApiResponse<null>,
-    _next: NextFunction
+    _next: NextFunction,
   ) => {
     logger.error("Something went wrong!", {
       error: {
@@ -48,10 +50,9 @@ app.use(
         code: 500,
       },
     });
-  }
+  },
 );
 
-const port = process.env.PORT;
-app.listen(port, () => {
-  logger.info(`Server is running port ${port}`);
+app.listen(PORT, () => {
+  logger.info(`Server is running port ${PORT}`);
 });
