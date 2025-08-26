@@ -1,18 +1,18 @@
 import jwt from "jsonwebtoken";
 import { Request } from "express";
-import { PrismaClient, User } from "@prisma/client";
+import { User } from "@prisma/client";
 import { ApiResponse } from "../types";
 import { getEnv } from "../env";
 import { logger } from "../logger";
+import { prisma } from "../prisma";
 
 const USER_JWT_SECRET = getEnv("USER_JWT_SECRET");
-const prisma = new PrismaClient();
 
 type CreateUserRequestBody = { name: string };
 type CreateUserResponse = ApiResponse<{ user: User; userToken: string }>;
 export async function createUser(
   req: Request<{}, {}, CreateUserRequestBody>,
-  res: CreateUserResponse
+  res: CreateUserResponse,
 ) {
   const name = req.body.name;
 
@@ -34,7 +34,7 @@ export async function createUser(
 
 export async function deleteUser(
   req: Request<JoinRoomParams>,
-  res: ApiResponse<string>
+  res: ApiResponse<string>,
 ) {
   const userId = req.userId;
   try {
@@ -79,7 +79,7 @@ type JoinRoomParams = { roomId: string };
 type JoinRoomResponse = ApiResponse<User>;
 export async function joinRoom(
   req: Request<{}, {}, JoinRoomParams>,
-  res: JoinRoomResponse
+  res: JoinRoomResponse,
 ) {
   const roomId = req.body.roomId;
   const userId = req.userId;

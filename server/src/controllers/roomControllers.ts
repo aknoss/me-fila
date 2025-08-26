@@ -1,13 +1,13 @@
 import { Request, Response } from "express";
 import jwt from "jsonwebtoken";
 import { nanoid } from "nanoid";
-import { PrismaClient, Room, User } from "@prisma/client";
+import { Room, User } from "@prisma/client";
 import { ApiResponse } from "../types";
 import { logger } from "../logger";
 import { getEnv } from "../env";
+import { prisma } from "../prisma";
 
 const HOST_JWT_SECRET = getEnv("HOST_JWT_SECRET");
-const prisma = new PrismaClient();
 
 type CreateRoomRequestBody = { name: string };
 type CreateRoomResponse = ApiResponse<{ room: Room; hostToken: string }>;
