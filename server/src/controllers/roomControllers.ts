@@ -57,7 +57,7 @@ export async function getRoom(req: Request, res: GetRoomResponse) {
         code: 404,
       };
       logger.error(error);
-      res.status(500).json({ data: null, error });
+      res.status(404).json({ data: null, error });
       return;
     }
     logger.info("Room found successfully", { data: room });
@@ -65,9 +65,9 @@ export async function getRoom(req: Request, res: GetRoomResponse) {
   } catch (err) {
     const error = err instanceof Error ? err : new Error("Unknown error");
     logger.error("Could not find room", { error });
-    res.status(404).json({
+    res.status(500).json({
       data: null,
-      error: { message: "Could not find room to delete", code: 404 },
+      error: { message: "Could not find room", code: 500 },
     });
   }
 }
