@@ -32,8 +32,9 @@ export async function createUser(
   }
 }
 
+type DeleteUserParams = { userId: string };
 export async function deleteUser(
-  req: Request<JoinRoomParams>,
+  req: Request<DeleteUserParams>,
   res: ApiResponse<string>,
 ) {
   const userId = req.userId;
