@@ -11,15 +11,15 @@ You will need to run both client and server at the same time to make the app wor
 
 ```
 cd client
-yarn dev
+npm run dev
 ```
 
 ```
 cd server
-yarn dev
+npm run dev
 ```
 
-Note: You will need to setup env variables and database connection for the server. See the .env.example file
+Note: You will need to setup env variables and database connection for the server. See the server/.env.example file
 
 - HOST_JWT_SECRET can be anything
 - USER_JWT_SECRET can be anything
