@@ -1,11 +1,11 @@
-import { Request, Response } from "express";
+import { Request } from "express";
 import jwt from "jsonwebtoken";
-import { nanoid } from "nanoid";
-import { Room, User } from "@prisma/client";
+import { Room } from "@prisma/client";
 import { ApiResponse } from "../types";
 import { logger } from "../logger";
 import { getEnv } from "../env";
 import { prisma } from "../prisma";
+import { generateUniqueBase62 } from "../utils/base62";
 
 const HOST_JWT_SECRET = getEnv("HOST_JWT_SECRET");
 
@@ -26,9 +26,9 @@ export async function createRoom(
       res.status(500).json({ data: null, error });
       return;
     }
-    // Easy ID for the user to type when looking for a room
-    const nanoId = nanoid(12);
-    const room = await prisma.room.create({ data: { id: nanoId, name } });
+
+    const id = await generateUniqueBase62(prisma);
+    const room = await prisma.room.create({ data: { id, name } });
     const hostToken = jwt.sign(room.id, HOST_JWT_SECRET!);
 
     logger.info("Room created successfully", { data: room });
