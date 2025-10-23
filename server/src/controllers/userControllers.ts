@@ -16,48 +16,30 @@ export async function createUser(
 ) {
   const name = req.body.name;
 
-  try {
-    const user = await prisma.user.create({ data: { name } });
-    const userToken = jwt.sign(user.id, USER_JWT_SECRET!);
+  const user = await prisma.user.create({ data: { name } });
+  const userToken = jwt.sign(user.id, USER_JWT_SECRET!);
 
-    logger.info("User created successfully", { data: user });
-    res.status(201).json({ data: { user, userToken }, error: null });
-  } catch (err) {
-    const error = err instanceof Error ? err : new Error("Unknown error");
-    logger.error("Failed to create a new user", { error });
-    res.status(500).json({
-      data: null,
-      error: { message: "Failed to create a new user", code: 500 },
-    });
-  }
+  logger.info("User created successfully", { data: user });
+  res.status(201).json({ data: { user, userToken }, error: null });
 }
 
 type GetUserResponse = ApiResponse<{ user: User }>;
 export async function getUser(req: Request, res: GetUserResponse) {
   const userId = req.userId;
-  try {
-    const user = await prisma.user.findFirst({
-      where: { id: userId },
-    });
-    if (!user) {
-      const error = {
-        message: "Could not find user",
-        code: 404,
-      };
-      logger.error(error);
-      res.status(404).json({ data: null, error });
-      return;
-    }
-    logger.info("User found successfully", { data: user });
-    res.status(200).json({ data: { user }, error: null });
-  } catch (err) {
-    const error = err instanceof Error ? err : new Error("Unknown error");
-    logger.error("Could not find user", { error });
-    res.status(500).json({
-      data: null,
-      error: { message: "Could not find user", code: 500 },
-    });
+  const user = await prisma.user.findFirst({
+    where: { id: userId },
+  });
+  if (!user) {
+    const error = {
+      message: "Could not find user",
+      code: 404,
+    };
+    logger.error(error);
+    res.status(404).json({ data: null, error });
+    return;
   }
+  logger.info("User found successfully", { data: user });
+  res.status(200).json({ data: { user }, error: null });
 }
 
 type DeleteUserParams = { userId: string };
@@ -66,42 +48,34 @@ export async function deleteUser(
   res: ApiResponse<string>,
 ) {
   const userId = req.userId;
-  try {
-    const user = await prisma.user.findUnique({
-      where: { id: userId },
-      select: { participatedRoomId: true },
-    });
 
-    if (!user) {
-      logger.error("Could not find user", { userId });
-      res.status(404).json({
-        data: null,
-        error: { message: "Could not find user", code: 404 },
-      });
-      return;
-    }
+  const user = await prisma.user.findUnique({
+    where: { id: userId },
+    select: { participatedRoomId: true },
+  });
 
-    if (user.participatedRoomId) {
-      await prisma.user.update({
-        where: { id: userId },
-        data: { participatedRoomId: null },
-      });
-    }
-
-    await prisma.user.delete({
-      where: { id: userId },
-    });
-
-    logger.error("User deleted successfully", { userId });
-    res.status(200).json({ data: "User deleted successfully", error: null });
-  } catch (err) {
-    const error = err instanceof Error ? err : new Error("Unknown error");
-    logger.error("Could not delete user", { error });
-    res.status(500).json({
+  if (!user) {
+    logger.error("Could not find user", { userId });
+    res.status(404).json({
       data: null,
-      error: { message: "Could not delete user", code: 404 },
+      error: { message: "Could not find user", code: 404 },
+    });
+    return;
+  }
+
+  if (user.participatedRoomId) {
+    await prisma.user.update({
+      where: { id: userId },
+      data: { participatedRoomId: null },
     });
   }
+
+  await prisma.user.delete({
+    where: { id: userId },
+  });
+
+  logger.error("User deleted successfully", { userId });
+  res.status(200).json({ data: "User deleted successfully", error: null });
 }
 
 type JoinRoomParams = { roomId: string };
@@ -112,18 +86,19 @@ export async function joinRoom(
 ) {
   const roomId = req.body.roomId;
   const userId = req.userId;
+
+  const roomCount = await prisma.room.count({ where: { id: roomId } });
+  const roomExists = roomCount > 0;
+  if (!roomExists) {
+    logger.error("Could not find room to join", { roomId });
+    res.status(404).json({
+      data: null,
+      error: { message: "Could not find room to join", code: 404 },
+    });
+    return;
+  }
+
   try {
-    const roomExists = (await prisma.room.count({ where: { id: roomId } })) > 0;
-
-    if (!roomExists) {
-      logger.error("Could not find room to join", { roomId });
-      res.status(404).json({
-        data: null,
-        error: { message: "Could not find room to join", code: 404 },
-      });
-      return;
-    }
-
     const updatedUser = await prisma.user.update({
       where: { id: userId },
       data: { participatedRoomId: roomId },
@@ -131,12 +106,11 @@ export async function joinRoom(
 
     logger.error("User joined room successfully", { updatedUser });
     res.status(200).json({ data: updatedUser, error: null });
-  } catch (err) {
-    const error = err instanceof Error ? err : new Error("Unknown error");
-    logger.error("Could not insert user into the room", { error });
+  } catch (error) {
+    logger.error("Could not find user", { error });
     res.status(500).json({
       data: null,
-      error: { message: "Could not insert user into the room", code: 404 },
+      error: { message: "Could not find user", code: 404 },
     });
   }
 }
