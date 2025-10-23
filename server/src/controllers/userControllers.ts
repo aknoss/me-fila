@@ -32,6 +32,34 @@ export async function createUser(
   }
 }
 
+type GetUserResponse = ApiResponse<{ user: User }>;
+export async function getUser(req: Request, res: GetUserResponse) {
+  const userId = req.userId;
+  try {
+    const user = await prisma.user.findFirst({
+      where: { id: userId },
+    });
+    if (!user) {
+      const error = {
+        message: "Could not find user",
+        code: 404,
+      };
+      logger.error(error);
+      res.status(404).json({ data: null, error });
+      return;
+    }
+    logger.info("User found successfully", { data: user });
+    res.status(200).json({ data: { user }, error: null });
+  } catch (err) {
+    const error = err instanceof Error ? err : new Error("Unknown error");
+    logger.error("Could not find user", { error });
+    res.status(500).json({
+      data: null,
+      error: { message: "Could not find user", code: 500 },
+    });
+  }
+}
+
 type DeleteUserParams = { userId: string };
 export async function deleteUser(
   req: Request<DeleteUserParams>,
