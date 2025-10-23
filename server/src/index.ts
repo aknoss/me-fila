@@ -6,6 +6,7 @@ import { roomRoutes } from "./routes/roomRoutes";
 import { ApiResponse } from "./types";
 import { logger } from "./logger";
 import { userRoutes } from "./routes/userRoutes";
+import { errorHandler } from "./middleware/errorHandler";
 
 dotenv.config();
 
@@ -29,29 +30,7 @@ app.get("/", (_req, res: ApiResponse<{ message: string }>) => {
   });
 });
 
-app.use(
-  (
-    error: Error,
-    _req: Request,
-    res: ApiResponse<null>,
-    _next: NextFunction,
-  ) => {
-    logger.error("Something went wrong!", {
-      error: {
-        message: error.message,
-        code: 500,
-        stack: process.env.NODE_ENV === "development" ? error.stack : undefined,
-      },
-    });
-    res.status(500).json({
-      data: null,
-      error: {
-        message: "Something went wrong!",
-        code: 500,
-      },
-    });
-  },
-);
+app.use(errorHandler);
 
 app.listen(PORT, () => {
   logger.info(`Server is running port ${PORT}`);
