@@ -1,6 +1,6 @@
 {
   "compilerOptions": {
-    "target": "es5",
+    "target": "ES2020",
     "module": "commonjs",
     "lib": ["es6"],
     "allowJs": true,
@@ -10,5 +10,13 @@
     "noImplicitAny": true,
     "esModuleInterop": true,
     "resolveJsonModule": true
-  }
+  },
+  "include": [
+    "src",
+    "generated"
+  ],
+  "exclude": [
+    "node_modules",
+    "dist"
+  ]
 }
