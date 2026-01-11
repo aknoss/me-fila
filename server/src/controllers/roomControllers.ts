@@ -1,6 +1,6 @@
 import { Request } from "express";
 import jwt from "jsonwebtoken";
-import { Room } from "@prisma/client";
+import { RoomModel } from "../../generated/prisma/models/Room";
 import { ApiResponse } from "../types";
 import { logger } from "../logger";
 import { getEnv } from "../env";
@@ -10,7 +10,7 @@ import { generateUniqueBase62 } from "../utils/base62";
 const HOST_JWT_SECRET = getEnv("HOST_JWT_SECRET");
 
 type CreateRoomRequestBody = { name: string };
-type CreateRoomResponse = ApiResponse<{ room: Room; hostToken: string }>;
+type CreateRoomResponse = ApiResponse<{ room: RoomModel; hostToken: string }>;
 export async function createRoom(
   req: Request<{}, {}, CreateRoomRequestBody>,
   res: CreateRoomResponse,
@@ -34,7 +34,7 @@ export async function createRoom(
   res.status(201).json({ data: { room, hostToken }, error: null });
 }
 
-type GetRoomResponse = ApiResponse<{ room: Room }>;
+type GetRoomResponse = ApiResponse<{ room: RoomModel }>;
 export async function getRoom(req: Request, res: GetRoomResponse) {
   const roomId = req.roomId;
   const room = await prisma.room.findFirst({

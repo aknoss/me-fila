@@ -4,7 +4,7 @@ import {
   getRoom,
   deleteRoom,
 } from "../controllers/roomControllers";
-import { authenticateHost, authenticateUser } from "../middleware/auth";
+import { authenticateHost } from "../middleware/auth";
 
 const roomRoutes = express.Router();
 
