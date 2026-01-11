@@ -1,15 +1,15 @@
-import { Navigate } from "react-router";
-import { ButtonGroup } from "../components/ButtonGroup";
-import { ButtonLink } from "../components/ButtonLink";
-import { Wrapper } from "../components/Wrapper";
-import { ROUTES } from "../constants/routes";
-import { useAuth } from "../providers/useAuth";
+import { Navigate } from "react-router"
+import { ButtonGroup } from "../components/ButtonGroup"
+import { ButtonLink } from "../components/ButtonLink"
+import { Wrapper } from "../components/Wrapper"
+import { ROUTES } from "../constants/routes"
+import { useAuth } from "../providers/useAuth"
 
 export function HomePage() {
-  const { hostToken } = useAuth();
+  const { hostToken } = useAuth()
 
   if (hostToken) {
-    return <Navigate to={ROUTES.HOST} />;
+    return <Navigate to={ROUTES.HOST} />
   }
 
   return (
@@ -20,5 +20,5 @@ export function HomePage() {
         <ButtonLink to={ROUTES.HOST}>Criar Fila</ButtonLink>
       </ButtonGroup>
     </Wrapper>
-  );
+  )
 }

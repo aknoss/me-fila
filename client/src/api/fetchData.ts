@@ -1,4 +1,4 @@
-type ApiMethod = "GET" | "POST" | "DELETE" | "PATCH";
+type ApiMethod = "GET" | "POST" | "DELETE" | "PATCH"
 
 export async function fetchData({
   url,
@@ -7,11 +7,11 @@ export async function fetchData({
   hostToken,
   userToken,
 }: {
-  url: string;
-  method: ApiMethod;
-  body?: Record<string, unknown>;
-  hostToken?: string;
-  userToken?: string;
+  url: string
+  method: ApiMethod
+  body?: Record<string, unknown>
+  hostToken?: string
+  userToken?: string
 }) {
   const response = await fetch(url, {
     method,
@@ -21,13 +21,13 @@ export async function fetchData({
       ...(userToken ? { Authorization: `Bearer ${userToken}` } : {}),
     },
     body: body ? JSON.stringify(body) : undefined,
-  });
+  })
   if (!response.ok) {
-    const errorResponse = await response.json();
+    const errorResponse = await response.json()
     throw {
       error: errorResponse,
-    };
+    }
   }
 
-  return response.json();
+  return response.json()
 }

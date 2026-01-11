@@ -1,6 +1,6 @@
-import type { Response } from "express";
+import type { Response } from "express"
 
 export type ApiResponse<T = null> = Response<{
-  data: T | null;
-  error: { message: string; code: number } | null;
-}>;
+  data: T | null
+  error: { message: string; code: number } | null
+}>

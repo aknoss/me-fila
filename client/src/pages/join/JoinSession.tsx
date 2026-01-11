@@ -1,13 +1,13 @@
-import { Navigate } from "react-router";
-import { Wrapper } from "../../components/Wrapper";
-import { ROUTES } from "../../constants/routes";
-import { useAuth } from "../../providers/useAuth";
+import { Navigate } from "react-router"
+import { Wrapper } from "../../components/Wrapper"
+import { ROUTES } from "../../constants/routes"
+import { useAuth } from "../../providers/useAuth"
 
 export function JoinSession() {
-  const { userToken, username } = useAuth();
+  const { userToken, username } = useAuth()
 
   if (!userToken || !username) {
-    return <Navigate to={ROUTES.HOME} replace />;
+    return <Navigate to={ROUTES.HOME} replace />
   }
 
   return (
@@ -15,5 +15,5 @@ export function JoinSession() {
       JOIN SESSION
       <p>Username: {username}</p>
     </Wrapper>
-  );
+  )
 }

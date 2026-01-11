@@ -1,15 +1,15 @@
-import { Navigate } from "react-router";
-import { Wrapper } from "../../components/Wrapper";
-import { Button } from "../../components/Button";
-import { useDeleteRoomMutation, useGetRoomQuery } from "../../api/roomApi";
-import { ROUTES } from "../../constants/routes";
-import { ErrorMessage } from "../../components/ErrorMessage";
-import { useAuth } from "../../providers/useAuth";
+import { Navigate } from "react-router"
+import { Wrapper } from "../../components/Wrapper"
+import { Button } from "../../components/Button"
+import { useDeleteRoomMutation, useGetRoomQuery } from "../../api/roomApi"
+import { ROUTES } from "../../constants/routes"
+import { ErrorMessage } from "../../components/ErrorMessage"
+import { useAuth } from "../../providers/useAuth"
 
-const ROOM_REFETCH_INTERVAL = 3000;
+const ROOM_REFETCH_INTERVAL = 3000
 
 export function HostSession() {
-  const { hostToken, roomId, logout } = useAuth();
+  const { hostToken, roomId, logout } = useAuth()
 
   const { data: roomData, isError: isGetRoomError } = useGetRoomQuery(
     hostToken!,
@@ -18,7 +18,7 @@ export function HostSession() {
       queryKey: [],
       refetchInterval: ROOM_REFETCH_INTERVAL,
     }
-  );
+  )
 
   const {
     mutate,
@@ -26,22 +26,22 @@ export function HostSession() {
     isError: isDeleteRoomError,
   } = useDeleteRoomMutation({
     onSuccess: () => {
-      logout();
+      logout()
     },
     onError: (error) => {
       if (error.error.error.code === 404) {
-        logout();
+        logout()
       }
     },
-  });
+  })
 
   if (!hostToken || !roomId) {
-    return <Navigate to={ROUTES.HOME} replace />;
+    return <Navigate to={ROUTES.HOME} replace />
   }
 
   const handleDeleteQueue = () => {
-    mutate({ hostToken });
-  };
+    mutate({ hostToken })
+  }
 
   return (
     <Wrapper>
@@ -65,5 +65,5 @@ export function HostSession() {
           </ErrorMessage>
         ))}
     </Wrapper>
-  );
+  )
 }

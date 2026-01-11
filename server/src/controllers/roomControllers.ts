@@ -1,70 +1,70 @@
-import jwt from "jsonwebtoken";
-import { logger } from "../logger";
-import { getEnv } from "../env";
-import { prisma } from "../prisma";
-import { generateUniqueBase62 } from "../utils/base62";
-import type { Request } from "express";
-import type { RoomModel } from "../../generated/prisma/models/Room";
-import type { ApiResponse } from "../types";
+import jwt from "jsonwebtoken"
+import { logger } from "../logger"
+import { getEnv } from "../env"
+import { prisma } from "../prisma"
+import { generateUniqueBase62 } from "../utils/base62"
+import type { Request } from "express"
+import type { RoomModel } from "../../generated/prisma/models/Room"
+import type { ApiResponse } from "../types"
 
-const HOST_JWT_SECRET = getEnv("HOST_JWT_SECRET");
+const HOST_JWT_SECRET = getEnv("HOST_JWT_SECRET")
 
-type CreateRoomRequestBody = { name: string };
-type CreateRoomResponse = ApiResponse<{ room: RoomModel; hostToken: string }>;
+type CreateRoomRequestBody = { name: string }
+type CreateRoomResponse = ApiResponse<{ room: RoomModel; hostToken: string }>
 export async function createRoom(
   req: Request<{}, {}, CreateRoomRequestBody>,
-  res: CreateRoomResponse,
+  res: CreateRoomResponse
 ) {
-  const name = req.body.name;
+  const name = req.body.name
   if (!name) {
     const error = {
       message: "A name for the room is required",
       code: 400,
-    };
-    logger.error(error);
-    res.status(500).json({ data: null, error });
-    return;
+    }
+    logger.error(error)
+    res.status(500).json({ data: null, error })
+    return
   }
 
-  const id = await generateUniqueBase62(prisma);
-  const room = await prisma.room.create({ data: { id, name } });
-  const hostToken = jwt.sign(room.id, HOST_JWT_SECRET!);
+  const id = await generateUniqueBase62(prisma)
+  const room = await prisma.room.create({ data: { id, name } })
+  const hostToken = jwt.sign(room.id, HOST_JWT_SECRET!)
 
-  logger.info("Room created successfully", { data: room });
-  res.status(201).json({ data: { room, hostToken }, error: null });
+  logger.info("Room created successfully", { data: room })
+  res.status(201).json({ data: { room, hostToken }, error: null })
 }
 
-type GetRoomResponse = ApiResponse<{ room: RoomModel }>;
+type GetRoomResponse = ApiResponse<{ room: RoomModel }>
 export async function getRoom(req: Request, res: GetRoomResponse) {
-  const roomId = req.roomId;
+  const roomId = req.roomId
   const room = await prisma.room.findFirst({
     where: { id: roomId },
     include: { participants: true },
-  });
+  })
   if (!room) {
     const error = {
       message: "Could not find room",
       code: 404,
-    };
-    logger.error(error);
-    res.status(404).json({ data: null, error });
-    return;
+    }
+    logger.error(error)
+    res.status(404).json({ data: null, error })
+    return
   }
-  logger.info("Room found successfully", { data: room });
-  res.status(200).json({ data: { room }, error: null });
+  logger.info("Room found successfully", { data: room })
+  res.status(200).json({ data: { room }, error: null })
 }
 
 export async function deleteRoom(req: Request, res: ApiResponse) {
-  const roomId = req.roomId;
+  const roomId = req.roomId
   try {
-    await prisma.room.delete({ where: { id: roomId } });
-    logger.info("Room deleted successfully");
-    res.status(200).json({ data: null, error: null });
+    await prisma.room.delete({ where: { id: roomId } })
+    logger.info("Room deleted successfully")
+    res.status(200).json({ data: null, error: null })
   } catch (error) {
-    logger.error("Could not find room to delete", { error });
+    logger.error("Could not find room to delete", { error })
     res.status(404).json({
       data: null,
       error: { message: "Could not find room to delete", code: 404 },
-    });
+    })
   }
 }

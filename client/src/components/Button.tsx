@@ -1,9 +1,9 @@
-import clsx from "clsx";
-import Spinner from "../assets/spinner.svg";
+import clsx from "clsx"
+import Spinner from "../assets/spinner.svg"
 
 type ButtonProps = React.ButtonHTMLAttributes<HTMLButtonElement> & {
-  isLoading?: boolean;
-};
+  isLoading?: boolean
+}
 
 export function Button({ isLoading, ...rest }: ButtonProps) {
   if (isLoading) {
@@ -11,7 +11,7 @@ export function Button({ isLoading, ...rest }: ButtonProps) {
       <div className="bg-white rounded-md h-16 flex items-center justify-center">
         <img src={Spinner} width={36} />
       </div>
-    );
+    )
   }
 
   return (
@@ -22,5 +22,5 @@ export function Button({ isLoading, ...rest }: ButtonProps) {
       )}
       {...rest}
     />
-  );
+  )
 }

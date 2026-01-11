@@ -1,40 +1,40 @@
-import { useState } from "react";
-import { Input } from "../../components/Input";
-import { Wrapper } from "../../components/Wrapper";
-import { ButtonLink } from "../../components/ButtonLink";
-import { ROUTES } from "../../constants/routes";
-import { Button } from "../../components/Button";
-import { ButtonGroup } from "../../components/ButtonGroup";
-import { useCreateRoomMutation } from "../../api/roomApi";
-import { ErrorMessage } from "../../components/ErrorMessage";
-import { useAuth } from "../../providers/useAuth";
+import { useState } from "react"
+import { Input } from "../../components/Input"
+import { Wrapper } from "../../components/Wrapper"
+import { ButtonLink } from "../../components/ButtonLink"
+import { ROUTES } from "../../constants/routes"
+import { Button } from "../../components/Button"
+import { ButtonGroup } from "../../components/ButtonGroup"
+import { useCreateRoomMutation } from "../../api/roomApi"
+import { ErrorMessage } from "../../components/ErrorMessage"
+import { useAuth } from "../../providers/useAuth"
 
 export function HostForm() {
-  const [queueName, setQueueName] = useState("");
-  const [queueNameError, setQueueNameError] = useState(false);
-  const { loginHost } = useAuth();
+  const [queueName, setQueueName] = useState("")
+  const [queueNameError, setQueueNameError] = useState(false)
+  const { loginHost } = useAuth()
 
   const { mutate, isPending, isError } = useCreateRoomMutation({
     onSuccess: (data) => {
-      loginHost({ hostToken: data.data.hostToken, roomId: data.data.room.id });
+      loginHost({ hostToken: data.data.hostToken, roomId: data.data.room.id })
     },
-  });
+  })
 
   const handleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-    setQueueName(event.target.value);
-    setQueueNameError(false);
-  };
+    setQueueName(event.target.value)
+    setQueueNameError(false)
+  }
 
   const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
-    event.preventDefault();
+    event.preventDefault()
 
     if (queueName === "") {
-      setQueueNameError(true);
-      return;
+      setQueueNameError(true)
+      return
     }
 
-    mutate({ name: queueName });
-  };
+    mutate({ name: queueName })
+  }
 
   return (
     <Wrapper>
@@ -61,5 +61,5 @@ export function HostForm() {
         </ButtonGroup>
       </form>
     </Wrapper>
-  );
+  )
 }

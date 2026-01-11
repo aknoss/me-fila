@@ -1,25 +1,25 @@
-import { useState } from "react";
-import { Input } from "../../components/Input";
-import { Wrapper } from "../../components/Wrapper";
-import { ButtonLink } from "../../components/ButtonLink";
-import { ROUTES } from "../../constants/routes";
-import { Button } from "../../components/Button";
-import { ButtonGroup } from "../../components/ButtonGroup";
-import { useCreateUserMutation, useJoinRoomMutation } from "../../api/userApi";
-import { useAuth } from "../../providers/useAuth";
-import { ErrorMessage } from "../../components/ErrorMessage";
+import { useState } from "react"
+import { Input } from "../../components/Input"
+import { Wrapper } from "../../components/Wrapper"
+import { ButtonLink } from "../../components/ButtonLink"
+import { ROUTES } from "../../constants/routes"
+import { Button } from "../../components/Button"
+import { ButtonGroup } from "../../components/ButtonGroup"
+import { useCreateUserMutation, useJoinRoomMutation } from "../../api/userApi"
+import { useAuth } from "../../providers/useAuth"
+import { ErrorMessage } from "../../components/ErrorMessage"
 
 export function JoinForm() {
-  const [roomId, setRoomId] = useState("");
-  const [roomIdError, setRoomIdError] = useState(false);
-  const [username, setUsername] = useState("");
-  const { loginUser } = useAuth();
+  const [roomId, setRoomId] = useState("")
+  const [roomIdError, setRoomIdError] = useState(false)
+  const [username, setUsername] = useState("")
+  const { loginUser } = useAuth()
 
   const {
     mutateAsync: createUserMutateAsync,
     isPending: createUserMutateIsPending,
     isError: createUserMutateIsError,
-  } = useCreateUserMutation();
+  } = useCreateUserMutation()
 
   const {
     mutateAsync: joinRoomMutateAsync,
@@ -30,33 +30,33 @@ export function JoinForm() {
       loginUser({
         userToken: data.data.id,
         username: data.data.name,
-      });
+      })
     },
-  });
+  })
 
   const handleChangeQueueId = (event: React.ChangeEvent<HTMLInputElement>) => {
-    setRoomId(event.target.value);
-    setRoomIdError(false);
-  };
+    setRoomId(event.target.value)
+    setRoomIdError(false)
+  }
 
   const handleChangeUsername = (event: React.ChangeEvent<HTMLInputElement>) => {
-    setUsername(event.target.value);
-  };
+    setUsername(event.target.value)
+  }
 
   const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
-    event.preventDefault();
+    event.preventDefault()
 
     if (roomId === "") {
-      setRoomIdError(true);
-      return;
+      setRoomIdError(true)
+      return
     }
 
-    const user = await createUserMutateAsync({ name: username });
+    const user = await createUserMutateAsync({ name: username })
     await joinRoomMutateAsync({
       userToken: user.data.userToken,
       roomId,
-    });
-  };
+    })
+  }
 
   return (
     <Wrapper>
@@ -94,5 +94,5 @@ export function JoinForm() {
         </ButtonGroup>
       </form>
     </Wrapper>
-  );
+  )
 }

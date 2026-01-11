@@ -1,8 +1,8 @@
-import { BrowserRouter, Routes, Route, Navigate } from "react-router";
-import { ROUTES } from "./constants/routes";
-import { HomePage } from "./pages/home";
-import { HostPage } from "./pages/host";
-import { JoinPage } from "./pages/join";
+import { BrowserRouter, Routes, Route, Navigate } from "react-router"
+import { ROUTES } from "./constants/routes"
+import { HomePage } from "./pages/home"
+import { HostPage } from "./pages/host"
+import { JoinPage } from "./pages/join"
 
 export function AppRoutes() {
   return (
@@ -18,5 +18,5 @@ export function AppRoutes() {
         <Route path="*" element={<Navigate to={ROUTES.HOME} />} />
       </Routes>
     </BrowserRouter>
-  );
+  )
 }

@@ -1,6 +1,6 @@
 type Props = {
-  children: React.ReactNode;
-};
+  children: React.ReactNode
+}
 
 export function Wrapper({ children }: Props) {
   return (
@@ -9,5 +9,5 @@ export function Wrapper({ children }: Props) {
         {children}
       </div>
     </div>
-  );
+  )
 }

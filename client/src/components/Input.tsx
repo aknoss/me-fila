@@ -1,10 +1,10 @@
-import { ErrorMessage } from "./ErrorMessage";
+import { ErrorMessage } from "./ErrorMessage"
 
 type Props = React.InputHTMLAttributes<HTMLInputElement> & {
-  label: string;
-  isError?: boolean;
-  errorMessage?: string;
-};
+  label: string
+  isError?: boolean
+  errorMessage?: string
+}
 
 export function Input({ label, isError, errorMessage, id, ...rest }: Props) {
   return (
@@ -21,5 +21,5 @@ export function Input({ label, isError, errorMessage, id, ...rest }: Props) {
         <ErrorMessage className="mt-2">{errorMessage}</ErrorMessage>
       )}
     </div>
-  );
+  )
 }
