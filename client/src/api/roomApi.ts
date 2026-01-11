@@ -6,14 +6,14 @@ import {
 } from "@tanstack/react-query";
 import { API_METHOD, API_ROUTES } from "../constants/apiRoutes";
 import { fetchData } from "./fetchData";
-import { Room, SuccessResponse, ErrorResponse } from "../types";
+import type { Room, SuccessResponse, ErrorResponse } from "../types";
 
 const GET_ROOM_QUERY_KEY = "get-room-query-key";
 
 type useGetRoomQuerySuccessResponse = SuccessResponse<{ room: Room }>;
 export function useGetRoomQuery(
   hostToken: string,
-  options?: UseQueryOptions<useGetRoomQuerySuccessResponse, ErrorResponse>
+  options?: UseQueryOptions<useGetRoomQuerySuccessResponse, ErrorResponse>,
 ) {
   return useQuery<useGetRoomQuerySuccessResponse, ErrorResponse>({
     ...options,
@@ -37,7 +37,7 @@ export function useCreateRoomMutation(
     useCreateRoomMutationSuccessResponse,
     ErrorResponse,
     useCreateRoomMutationVariables
-  >
+  >,
 ) {
   return useMutation<
     useCreateRoomMutationSuccessResponse,
@@ -61,7 +61,7 @@ export function useDeleteRoomMutation(
     useDeleteRoomMutationSuccessResponse,
     ErrorResponse,
     useDeleteRoomMutationVariables
-  >
+  >,
 ) {
   return useMutation<
     useDeleteRoomMutationSuccessResponse,

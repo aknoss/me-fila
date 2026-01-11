@@ -1,11 +1,11 @@
-import { Request } from "express";
 import jwt from "jsonwebtoken";
-import { RoomModel } from "../../generated/prisma/models/Room";
-import { ApiResponse } from "../types";
 import { logger } from "../logger";
 import { getEnv } from "../env";
 import { prisma } from "../prisma";
 import { generateUniqueBase62 } from "../utils/base62";
+import type { Request } from "express";
+import type { RoomModel } from "../../generated/prisma/models/Room";
+import type { ApiResponse } from "../types";
 
 const HOST_JWT_SECRET = getEnv("HOST_JWT_SECRET");
 

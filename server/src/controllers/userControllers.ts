@@ -1,10 +1,10 @@
 import jwt from "jsonwebtoken";
-import { Request } from "express";
-import { UserModel } from "../../generated/prisma/models/User";
-import { ApiResponse } from "../types";
 import { getEnv } from "../env";
 import { logger } from "../logger";
 import { prisma } from "../prisma";
+import type { Request } from "express";
+import type { UserModel } from "../../generated/prisma/models/User";
+import type { ApiResponse } from "../types";
 
 const USER_JWT_SECRET = getEnv("USER_JWT_SECRET");
 

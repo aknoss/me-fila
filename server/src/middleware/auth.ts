@@ -1,8 +1,8 @@
-import { Request, NextFunction } from "express";
 import jwt from "jsonwebtoken";
-import { ApiResponse } from "../types";
 import { logger } from "../logger";
 import { getEnv } from "../env";
+import type { Request, NextFunction } from "express";
+import type { ApiResponse } from "../types";
 
 const HOST_JWT_SECRET = getEnv("HOST_JWT_SECRET");
 const USER_JWT_SECRET = getEnv("USER_JWT_SECRET");
@@ -10,7 +10,7 @@ const USER_JWT_SECRET = getEnv("USER_JWT_SECRET");
 export async function authenticateHost(
   req: Request,
   res: ApiResponse,
-  next: NextFunction
+  next: NextFunction,
 ) {
   const authHeader = req.headers["authorization"];
   if (!authHeader || !authHeader.includes("Bearer ")) {
@@ -43,7 +43,7 @@ export async function authenticateHost(
 export async function authenticateUser(
   req: Request,
   res: ApiResponse,
-  next: NextFunction
+  next: NextFunction,
 ) {
   const authHeader = req.headers["authorization"];
   if (!authHeader || !authHeader.includes("Bearer ")) {

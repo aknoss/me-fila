@@ -1,12 +1,12 @@
-import { NextFunction, Request } from "express";
-import { ApiResponse } from "../types";
 import { logger } from "../logger";
+import type { NextFunction, Request } from "express";
+import type { ApiResponse } from "../types";
 
 export const errorHandler = (
   error: Error,
   _req: Request,
   res: ApiResponse<null>,
-  _next: NextFunction
+  _next: NextFunction,
 ) => {
   logger.error("Something went wrong!", {
     error: {

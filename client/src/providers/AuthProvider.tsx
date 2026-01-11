@@ -26,16 +26,16 @@ export type AuthContextType = {
 
 export function AuthProvider({ children }: { children: React.ReactNode }) {
   const [hostToken, setHostToken] = useState<string | null>(
-    localStorage.getItem(LocalStorage.HOST_TOKEN)
+    localStorage.getItem(LocalStorage.HOST_TOKEN),
   );
   const [roomId, setRoomId] = useState<string | null>(
-    localStorage.getItem(LocalStorage.ROOM_ID)
+    localStorage.getItem(LocalStorage.ROOM_ID),
   );
   const [userToken, setUserToken] = useState<string | null>(
-    localStorage.getItem(LocalStorage.USER_TOKEN)
+    localStorage.getItem(LocalStorage.USER_TOKEN),
   );
   const [username, setUsername] = useState<string | null>(
-    localStorage.getItem(LocalStorage.USERNAME)
+    localStorage.getItem(LocalStorage.USERNAME),
   );
 
   const loginHost = useCallback(
@@ -51,7 +51,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
       setHostToken(currentHostToken);
       setRoomId(currentRoomId);
     },
-    []
+    [],
   );
 
   const loginUser = useCallback(
@@ -67,7 +67,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
       setUserToken(currentUserToken);
       setUsername(currentUsername);
     },
-    []
+    [],
   );
 
   const logout = useCallback(() => {

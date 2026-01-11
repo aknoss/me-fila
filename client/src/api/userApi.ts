@@ -1,7 +1,8 @@
-import { useMutation, UseMutationOptions } from "@tanstack/react-query";
+import { useMutation } from "@tanstack/react-query";
 import { API_METHOD, API_ROUTES } from "../constants/apiRoutes";
 import { fetchData } from "./fetchData";
-import { User, SuccessResponse, ErrorResponse } from "../types";
+import type { User, SuccessResponse, ErrorResponse } from "../types";
+import type { UseMutationOptions } from "@tanstack/react-query";
 
 type useCreateUserMutationSuccessResponse = SuccessResponse<{
   user: User;
@@ -13,7 +14,7 @@ export function useCreateUserMutation(
     useCreateUserMutationSuccessResponse,
     ErrorResponse,
     useCreateUserMutationVariables
-  >
+  >,
 ) {
   return useMutation<
     useCreateUserMutationSuccessResponse,
@@ -37,7 +38,7 @@ export function useDeleteUserMutation(
     useDeleteUserMutationSuccessResponse,
     ErrorResponse,
     useDeleteUserMutationVariables
-  >
+  >,
 ) {
   return useMutation<
     useDeleteUserMutationSuccessResponse,
@@ -61,7 +62,7 @@ export function useJoinRoomMutation(
     useJoinRoomMutationSuccessResponse,
     ErrorResponse,
     useJoinRoomMutationVariables
-  >
+  >,
 ) {
   return useMutation<
     useJoinRoomMutationSuccessResponse,
