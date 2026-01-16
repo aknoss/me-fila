@@ -17,9 +17,11 @@ export type AuthContextType = {
   loginUser: ({
     userToken,
     username,
+    roomId,
   }: {
     userToken: string
     username: string
+    roomId: string
   }) => void
   logout: () => void
 }
@@ -58,14 +60,17 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     ({
       userToken: currentUserToken,
       username: currentUsername,
+      roomId: currentRoomId,
     }: {
       userToken: string
       username: string
+      roomId: string
     }) => {
       localStorage.setItem(LocalStorage.USER_TOKEN, currentUserToken)
       localStorage.setItem(LocalStorage.USERNAME, currentUsername)
       setUserToken(currentUserToken)
       setUsername(currentUsername)
+      setRoomId(currentRoomId)
     },
     []
   )

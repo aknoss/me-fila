@@ -10,10 +10,10 @@ import { useAuth } from "../../providers/useAuth"
 import { ErrorMessage } from "../../components/ErrorMessage"
 
 export function JoinForm() {
-  const [roomId, setRoomId] = useState("")
+  const [roomIdInput, setRoomIdInput] = useState("")
   const [roomIdError, setRoomIdError] = useState(false)
   const [username, setUsername] = useState("")
-  const { loginUser } = useAuth()
+  const { loginUser, roomId } = useAuth()
 
   const {
     mutateAsync: createUserMutateAsync,
@@ -30,12 +30,13 @@ export function JoinForm() {
       loginUser({
         userToken: data.data.id,
         username: data.data.name,
+        roomId: data.data.participatedRoomId,
       })
     },
   })
 
   const handleChangeQueueId = (event: React.ChangeEvent<HTMLInputElement>) => {
-    setRoomId(event.target.value)
+    setRoomIdInput(event.target.value)
     setRoomIdError(false)
   }
 
@@ -46,7 +47,7 @@ export function JoinForm() {
   const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault()
 
-    if (roomId === "") {
+    if (roomIdInput === "") {
       setRoomIdError(true)
       return
     }
@@ -54,8 +55,9 @@ export function JoinForm() {
     const user = await createUserMutateAsync({ name: username })
     await joinRoomMutateAsync({
       userToken: user.data.userToken,
-      roomId,
+      roomId: roomIdInput,
     })
+    roomId = roomIdInput
   }
 
   return (
@@ -68,7 +70,7 @@ export function JoinForm() {
             label="ID da Fila"
             isError={roomIdError}
             errorMessage="Insira um id por favor"
-            value={roomId}
+            value={roomIdInput}
             onChange={handleChangeQueueId}
           />
           <Input
