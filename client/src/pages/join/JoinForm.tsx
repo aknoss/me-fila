@@ -57,7 +57,6 @@ export function JoinForm() {
       userToken: user.data.userToken,
       roomId: roomIdInput,
     })
-    roomId = roomIdInput
   }
 
   return (
