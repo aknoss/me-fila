@@ -1,11 +1,11 @@
 import express from "express"
 import { createRoom, getRoom, deleteRoom } from "../controllers/roomControllers"
-import { authenticateHost } from "../middleware/auth"
+import { authenticate } from "../middleware/auth"
 
 const roomRoutes = express.Router()
 
 roomRoutes.post("/", createRoom)
-roomRoutes.get("/", authenticateHost, getRoom)
-roomRoutes.delete("/", authenticateHost, deleteRoom)
+roomRoutes.get("/", authenticate, getRoom)
+roomRoutes.delete("/", authenticate, deleteRoom)
 
 export { roomRoutes }

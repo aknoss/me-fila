@@ -21,8 +21,7 @@ npm install
 Create a .env file with these values:
 
 ```
-- HOST_JWT_SECRET: can be any string
-- USER_JWT_SECRET: can be any string
+- JWT_SECRET: can be any string
 - DATABASE_URL: needs to be your connection to the postgresql db
 ```
 

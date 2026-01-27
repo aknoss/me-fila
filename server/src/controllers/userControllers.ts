@@ -6,10 +6,10 @@ import type { Request } from "express"
 import type { UserModel } from "../../generated/prisma/models/User"
 import type { ApiResponse } from "../types"
 
-const USER_JWT_SECRET = getEnv("USER_JWT_SECRET")
+const JWT_SECRET = getEnv("JWT_SECRET")
 
 type CreateUserRequestBody = { name: string }
-type CreateUserResponse = ApiResponse<{ user: UserModel; userToken: string }>
+type CreateUserResponse = ApiResponse<{ user: UserModel; accessToken: string }>
 export async function createUser(
   req: Request<{}, {}, CreateUserRequestBody>,
   res: CreateUserResponse
@@ -17,15 +17,18 @@ export async function createUser(
   const name = req.body.name
 
   const user = await prisma.user.create({ data: { name } })
-  const userToken = jwt.sign(user.id, USER_JWT_SECRET!)
+  const accessToken = jwt.sign({ id: user.id, role: "user" }, JWT_SECRET!)
 
   logger.info("User created successfully", { data: user })
-  res.status(201).json({ data: { user, userToken }, error: null })
+  res.status(201).json({ data: { user, accessToken }, error: null })
 }
 
 type GetUserResponse = ApiResponse<{ user: UserModel }>
 export async function getUser(req: Request, res: GetUserResponse) {
-  const userId = req.userId
+  if (req.role !== "user") {
+    return res.status(403).json({ data: null, error: { message: "Forbidden", code: 403 } })
+  }
+  const userId = req.id
   const user = await prisma.user.findFirst({
     where: { id: userId },
   })
@@ -47,7 +50,10 @@ export async function deleteUser(
   req: Request<DeleteUserParams>,
   res: ApiResponse<string>
 ) {
-  const userId = req.userId
+  if (req.role !== "user") {
+    return res.status(403).json({ data: null, error: { message: "Forbidden", code: 403 } })
+  }
+  const userId = req.id
 
   const user = await prisma.user.findUnique({
     where: { id: userId },
@@ -84,8 +90,11 @@ export async function joinRoom(
   req: Request<{}, {}, JoinRoomParams>,
   res: JoinRoomResponse
 ) {
+  if (req.role !== "user") {
+    return res.status(403).json({ data: null, error: { message: "Forbidden", code: 403 } })
+  }
   const roomId = req.body.roomId
-  const userId = req.userId
+  const userId = req.id
 
   const roomCount = await prisma.room.count({ where: { id: roomId } })
   const roomExists = roomCount > 0

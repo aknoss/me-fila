@@ -3,9 +3,9 @@ import { HostSession } from "./HostSession"
 import { HostForm } from "./HostForm"
 
 export function HostPage() {
-  const { hostToken } = useAuth()
+  const { accessToken, role } = useAuth()
 
-  if (hostToken) {
+  if (accessToken && role === "host") {
     return <HostSession />
   }
 

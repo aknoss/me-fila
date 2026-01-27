@@ -1,12 +1,11 @@
 import { createContext } from "react"
-import type { AuthContextType } from "./AuthProvider"
+import { AuthContextType } from "./AuthProvider.types"
 
 export const AuthContext = createContext<AuthContextType>({
-  hostToken: null,
+  accessToken: null,
+  role: null,
   roomId: null,
-  loginHost: () => {},
-  userToken: null,
   username: null,
-  loginUser: () => {},
+  login: () => {},
   logout: () => {},
 })

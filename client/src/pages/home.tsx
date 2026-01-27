@@ -6,9 +6,9 @@ import { ROUTES } from "../constants/routes"
 import { useAuth } from "../providers/useAuth"
 
 export function HomePage() {
-  const { hostToken } = useAuth()
+  const { accessToken, role } = useAuth()
 
-  if (hostToken) {
+  if (accessToken && role === "host") {
     return <Navigate to={ROUTES.HOST} />
   }
 

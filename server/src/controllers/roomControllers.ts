@@ -5,12 +5,12 @@ import { prisma } from "../prisma"
 import { generateUniqueBase62 } from "../utils/base62"
 import type { Request } from "express"
 import type { RoomModel } from "../../generated/prisma/models/Room"
-import type { ApiResponse } from "../types"
+import { Role, type ApiResponse } from "../types"
 
-const HOST_JWT_SECRET = getEnv("HOST_JWT_SECRET")
+const JWT_SECRET = getEnv("JWT_SECRET")
 
 type CreateRoomRequestBody = { name: string }
-type CreateRoomResponse = ApiResponse<{ room: RoomModel; hostToken: string }>
+type CreateRoomResponse = ApiResponse<{ room: RoomModel; accessToken: string }>
 export async function createRoom(
   req: Request<{}, {}, CreateRoomRequestBody>,
   res: CreateRoomResponse
@@ -28,15 +28,20 @@ export async function createRoom(
 
   const id = await generateUniqueBase62(prisma)
   const room = await prisma.room.create({ data: { id, name } })
-  const hostToken = jwt.sign(room.id, HOST_JWT_SECRET!)
+  const accessToken = jwt.sign({ id: room.id, role: "host" }, JWT_SECRET!)
 
   logger.info("Room created successfully", { data: room })
-  res.status(201).json({ data: { room, hostToken }, error: null })
+  res.status(201).json({ data: { room, accessToken }, error: null })
 }
 
 type GetRoomResponse = ApiResponse<{ room: RoomModel }>
 export async function getRoom(req: Request, res: GetRoomResponse) {
-  const roomId = req.roomId
+  if (req.role !== Role.HOST) {
+    return res
+      .status(403)
+      .json({ data: null, error: { message: "Forbidden", code: 403 } })
+  }
+  const roomId = req.id
   const room = await prisma.room.findFirst({
     where: { id: roomId },
     include: { participants: true },
@@ -55,7 +60,12 @@ export async function getRoom(req: Request, res: GetRoomResponse) {
 }
 
 export async function deleteRoom(req: Request, res: ApiResponse) {
-  const roomId = req.roomId
+  if (req.role !== "host") {
+    return res
+      .status(403)
+      .json({ data: null, error: { message: "Forbidden", code: 403 } })
+  }
+  const roomId = req.id
   try {
     await prisma.room.delete({ where: { id: roomId } })
     logger.info("Room deleted successfully")

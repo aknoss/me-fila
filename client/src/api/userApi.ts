@@ -6,7 +6,7 @@ import type { UseMutationOptions } from "@tanstack/react-query"
 
 type useCreateUserMutationSuccessResponse = SuccessResponse<{
   user: User
-  userToken: string
+  token: string
 }>
 type useCreateUserMutationVariables = { name: string }
 export function useCreateUserMutation(
@@ -32,7 +32,7 @@ export function useCreateUserMutation(
 }
 
 type useDeleteUserMutationSuccessResponse = SuccessResponse<null>
-type useDeleteUserMutationVariables = { userToken: string }
+type useDeleteUserMutationVariables = { token: string }
 export function useDeleteUserMutation(
   options?: UseMutationOptions<
     useDeleteUserMutationSuccessResponse,
@@ -46,17 +46,17 @@ export function useDeleteUserMutation(
     useDeleteUserMutationVariables
   >({
     ...options,
-    mutationFn: ({ userToken }) =>
+    mutationFn: ({ accessToken }) =>
       fetchData({
         url: API_ROUTES.USER,
         method: API_METHOD.DELETE,
-        userToken,
+        accessToken,
       }),
   })
 }
 
 type useJoinRoomMutationSuccessResponse = SuccessResponse<User>
-type useJoinRoomMutationVariables = { userToken: string; roomId: string }
+type useJoinRoomMutationVariables = { token: string; roomId: string }
 export function useJoinRoomMutation(
   options?: UseMutationOptions<
     useJoinRoomMutationSuccessResponse,
@@ -70,12 +70,12 @@ export function useJoinRoomMutation(
     useJoinRoomMutationVariables
   >({
     ...options,
-    mutationFn: ({ userToken, roomId }) =>
+    mutationFn: ({ accessToken, roomId }) =>
       fetchData({
         url: API_ROUTES.USER_JOIN,
         method: API_METHOD.PATCH,
         body: { roomId },
-        userToken,
+        accessToken,
       }),
   })
 }

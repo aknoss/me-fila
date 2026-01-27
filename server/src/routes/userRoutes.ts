@@ -5,14 +5,14 @@ import {
   deleteUser,
   joinRoom,
 } from "../controllers/userControllers"
-import { authenticateUser } from "../middleware/auth"
+import { authenticate } from "../middleware/auth"
 
 const userRoutes = express.Router()
 
 userRoutes.post("/", createUser)
-userRoutes.get("/", authenticateUser, getUser)
-userRoutes.delete("/", authenticateUser, deleteUser)
+userRoutes.get("/", authenticate, getUser)
+userRoutes.delete("/", authenticate, deleteUser)
 
-userRoutes.patch("/join", authenticateUser, joinRoom)
+userRoutes.patch("/join", authenticate, joinRoom)
 
 export { userRoutes }

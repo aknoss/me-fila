@@ -3,11 +3,20 @@ import { Wrapper } from "../../components/Wrapper"
 import { ROUTES } from "../../constants/routes"
 import { useAuth } from "../../providers/useAuth"
 import { Button } from "../../components/Button"
+import { useDeleteUserMutation } from "../../api/userApi"
 
 export function JoinSession() {
-  const { userToken, username, roomId, logout } = useAuth()
+  const { accessToken, role, username, roomId, logout } = useAuth()
 
-  if (!userToken || !username) {
+  const { mutate: deleteUserMutate } = useDeleteUserMutation()
+
+  const logoutAndDeleteUser = () => {
+    if (accessToken && role === "user") {
+      deleteUserMutate({ accessToken })
+    }
+  }
+
+  if (!accessToken || role !== "user" || !username) {
     return <Navigate to={ROUTES.HOME} replace />
   }
 
@@ -15,7 +24,7 @@ export function JoinSession() {
     <Wrapper>
       JOIN SESSION
       <p>Username: {username}</p>
-      <Button onClick={logout}>Sair</Button>
+      <Button onClick={logoutAndDeleteUser}>Sair</Button>
       <p>ID da fila: {roomId}</p>
     </Wrapper>
   )

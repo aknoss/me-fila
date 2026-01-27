@@ -4,21 +4,18 @@ export async function fetchData({
   url,
   method,
   body,
-  hostToken,
-  userToken,
+  accessToken,
 }: {
   url: string
   method: ApiMethod
   body?: Record<string, unknown>
-  hostToken?: string
-  userToken?: string
+  accessToken?: string
 }) {
   const response = await fetch(url, {
     method,
     headers: {
       "Content-Type": "application/json",
-      ...(hostToken ? { Authorization: `Bearer ${hostToken}` } : {}),
-      ...(userToken ? { Authorization: `Bearer ${userToken}` } : {}),
+      ...(accessToken ? { Authorization: `Bearer ${accessToken}` } : {}),
     },
     body: body ? JSON.stringify(body) : undefined,
   })

@@ -3,9 +3,9 @@ import { JoinForm } from "./JoinForm"
 import { JoinSession } from "./JoinSession"
 
 export function JoinPage() {
-  const { userToken } = useAuth()
+  const { accessToken, role } = useAuth()
 
-  if (userToken) {
+  if (accessToken && role === "user") {
     return <JoinSession />
   }
 

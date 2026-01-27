@@ -8,15 +8,20 @@ import { ButtonGroup } from "../../components/ButtonGroup"
 import { useCreateRoomMutation } from "../../api/roomApi"
 import { ErrorMessage } from "../../components/ErrorMessage"
 import { useAuth } from "../../providers/useAuth"
+import { Role } from "../../providers/AuthProvider.types"
 
 export function HostForm() {
   const [queueName, setQueueName] = useState("")
   const [queueNameError, setQueueNameError] = useState(false)
-  const { loginHost } = useAuth()
+  const { login } = useAuth()
 
   const { mutate, isPending, isError } = useCreateRoomMutation({
     onSuccess: (data) => {
-      loginHost({ hostToken: data.data.hostToken, roomId: data.data.room.id })
+      login({
+        accessToken: data.data.accessToken,
+        role: Role.HOST,
+        roomId: data.data.room.id,
+      })
     },
   })
 

@@ -12,24 +12,24 @@ const GET_ROOM_QUERY_KEY = "get-room-query-key"
 
 type useGetRoomQuerySuccessResponse = SuccessResponse<{ room: Room }>
 export function useGetRoomQuery(
-  hostToken: string,
+  accessToken: string,
   options?: UseQueryOptions<useGetRoomQuerySuccessResponse, ErrorResponse>
 ) {
   return useQuery<useGetRoomQuerySuccessResponse, ErrorResponse>({
     ...options,
-    queryKey: [GET_ROOM_QUERY_KEY, hostToken],
+    queryKey: [GET_ROOM_QUERY_KEY, accessToken],
     queryFn: () =>
       fetchData({
         url: API_ROUTES.ROOM,
         method: API_METHOD.GET,
-        hostToken,
+        accessToken,
       }),
   })
 }
 
 type useCreateRoomMutationSuccessResponse = SuccessResponse<{
   room: Room
-  hostToken: string
+  accessToken: string
 }>
 type useCreateRoomMutationVariables = { name: string }
 export function useCreateRoomMutation(
@@ -55,7 +55,7 @@ export function useCreateRoomMutation(
 }
 
 type useDeleteRoomMutationSuccessResponse = SuccessResponse<null>
-type useDeleteRoomMutationVariables = { hostToken: string }
+type useDeleteRoomMutationVariables = { token: string }
 export function useDeleteRoomMutation(
   options?: UseMutationOptions<
     useDeleteRoomMutationSuccessResponse,
@@ -69,11 +69,11 @@ export function useDeleteRoomMutation(
     useDeleteRoomMutationVariables
   >({
     ...options,
-    mutationFn: ({ hostToken }) =>
+    mutationFn: ({ accessToken }) =>
       fetchData({
         url: API_ROUTES.ROOM,
         method: API_METHOD.DELETE,
-        hostToken,
+        accessToken,
       }),
   })
 }

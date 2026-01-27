@@ -9,12 +9,11 @@ import { useAuth } from "../../providers/useAuth"
 const ROOM_REFETCH_INTERVAL = 3000
 
 export function HostSession() {
-  const { hostToken, roomId, logout } = useAuth()
+  const { accessToken, role, roomId, logout } = useAuth()
 
   const { data: roomData, isError: isGetRoomError } = useGetRoomQuery(
-    hostToken!,
+    accessToken!,
     {
-      // queryKey is set in the function implementation but is required by typescript here
       queryKey: [],
       refetchInterval: ROOM_REFETCH_INTERVAL,
     }
@@ -35,12 +34,12 @@ export function HostSession() {
     },
   })
 
-  if (!hostToken || !roomId) {
+  if (!accessToken || role !== "host" || !roomId) {
     return <Navigate to={ROUTES.HOME} replace />
   }
 
   const handleDeleteQueue = () => {
-    mutate({ hostToken })
+    mutate({ accessToken })
   }
 
   return (

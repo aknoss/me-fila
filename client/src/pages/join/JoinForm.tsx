@@ -13,7 +13,7 @@ export function JoinForm() {
   const [roomIdInput, setRoomIdInput] = useState("")
   const [roomIdError, setRoomIdError] = useState(false)
   const [username, setUsername] = useState("")
-  const { loginUser, roomId } = useAuth()
+  const { login } = useAuth()
 
   const {
     mutateAsync: createUserMutateAsync,
@@ -27,8 +27,9 @@ export function JoinForm() {
     isError: joinRoomMutateIsError,
   } = useJoinRoomMutation({
     onSuccess: (data) => {
-      loginUser({
-        userToken: data.data.id,
+      login({
+        token: data.data.token,
+        role: "user",
         username: data.data.name,
         roomId: data.data.participatedRoomId,
       })
@@ -54,7 +55,7 @@ export function JoinForm() {
 
     const user = await createUserMutateAsync({ name: username })
     await joinRoomMutateAsync({
-      userToken: user.data.userToken,
+      accessToken: user.data.token,
       roomId: roomIdInput,
     })
   }

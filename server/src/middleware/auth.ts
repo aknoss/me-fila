@@ -2,12 +2,11 @@ import jwt from "jsonwebtoken"
 import { logger } from "../logger"
 import { getEnv } from "../env"
 import type { Request, NextFunction } from "express"
-import type { ApiResponse } from "../types"
+import type { ApiResponse, Role } from "../types"
 
-const HOST_JWT_SECRET = getEnv("HOST_JWT_SECRET")
-const USER_JWT_SECRET = getEnv("USER_JWT_SECRET")
+const JWT_SECRET = getEnv("JWT_SECRET")
 
-export async function authenticateHost(
+export async function authenticate(
   req: Request,
   res: ApiResponse,
   next: NextFunction
@@ -15,7 +14,7 @@ export async function authenticateHost(
   const authHeader = req.headers["authorization"]
   if (!authHeader || !authHeader.includes("Bearer ")) {
     const error = {
-      message: "Unauthorized: Missing token",
+      message: "Unauthorized: Missing access token",
       code: 401,
     }
     logger.error(error)
@@ -23,49 +22,20 @@ export async function authenticateHost(
     return
   }
 
-  // Extract the token from "Bearer token"
-  const hostToken = authHeader!.split(" ")[1]
+  // Extract the access token from "Bearer token"
+  const accessToken = authHeader!.split(" ")[1]
 
   try {
-    const roomId = jwt.verify(hostToken, HOST_JWT_SECRET!) as string
-    req.roomId = roomId
+    const payload = jwt.verify(accessToken, JWT_SECRET!) as {
+      id: string
+      role: Role
+    }
+    req.id = payload.id
+    req.role = payload.role
     next()
   } catch (err) {
     const error = {
-      message: "Unauthorized: Invalid token",
-      code: 500,
-    }
-    logger.error({ error })
-    res.status(500).json({ data: null, error })
-  }
-}
-
-export async function authenticateUser(
-  req: Request,
-  res: ApiResponse,
-  next: NextFunction
-) {
-  const authHeader = req.headers["authorization"]
-  if (!authHeader || !authHeader.includes("Bearer ")) {
-    const error = {
-      message: "Unauthorized: Missing token",
-      code: 401,
-    }
-    logger.error(error)
-    res.status(401).json({ data: null, error })
-    return
-  }
-
-  // Extract the token from "Bearer token"
-  const userToken = authHeader!.split(" ")[1]
-
-  try {
-    const userId = jwt.verify(userToken, USER_JWT_SECRET!) as string
-    req.userId = userId
-    next()
-  } catch (err) {
-    const error = {
-      message: "Unauthorized: Invalid token",
+      message: "Unauthorized: Invalid access token",
       code: 500,
     }
     logger.error({ error })
