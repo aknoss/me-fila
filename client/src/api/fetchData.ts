@@ -19,6 +19,7 @@ export async function fetchData({
     },
     body: body ? JSON.stringify(body) : undefined,
   })
+
   if (!response.ok) {
     const errorResponse = await response.json()
     throw {
