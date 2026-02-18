@@ -2,9 +2,9 @@ import jwt from "jsonwebtoken"
 import { getEnv } from "../env"
 import { logger } from "../logger"
 import { prisma } from "../prisma"
+import { Role, type ApiResponse } from "../types"
 import type { Request } from "express"
 import type { UserModel } from "../../generated/prisma/models/User"
-import type { ApiResponse } from "../types"
 
 const JWT_SECRET = getEnv("JWT_SECRET")
 
@@ -25,8 +25,10 @@ export async function createUser(
 
 type GetUserResponse = ApiResponse<{ user: UserModel }>
 export async function getUser(req: Request, res: GetUserResponse) {
-  if (req.role !== "user") {
-    return res.status(403).json({ data: null, error: { message: "Forbidden", code: 403 } })
+  if (req.role !== Role.USER) {
+    return res
+      .status(403)
+      .json({ data: null, error: { message: "Forbidden", code: 403 } })
   }
   const userId = req.id
   const user = await prisma.user.findFirst({
@@ -50,8 +52,10 @@ export async function deleteUser(
   req: Request<DeleteUserParams>,
   res: ApiResponse<string>
 ) {
-  if (req.role !== "user") {
-    return res.status(403).json({ data: null, error: { message: "Forbidden", code: 403 } })
+  if (req.role !== Role.USER) {
+    return res
+      .status(403)
+      .json({ data: null, error: { message: "Forbidden", code: 403 } })
   }
   const userId = req.id
 
@@ -90,8 +94,10 @@ export async function joinRoom(
   req: Request<{}, {}, JoinRoomParams>,
   res: JoinRoomResponse
 ) {
-  if (req.role !== "user") {
-    return res.status(403).json({ data: null, error: { message: "Forbidden", code: 403 } })
+  if (req.role !== Role.USER) {
+    return res
+      .status(403)
+      .json({ data: null, error: { message: "Forbidden", code: 403 } })
   }
   const roomId = req.body.roomId
   const userId = req.id

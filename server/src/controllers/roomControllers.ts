@@ -3,9 +3,9 @@ import { logger } from "../logger"
 import { getEnv } from "../env"
 import { prisma } from "../prisma"
 import { generateUniqueBase62 } from "../utils/base62"
+import { Role, type ApiResponse } from "../types"
 import type { Request } from "express"
 import type { RoomModel } from "../../generated/prisma/models/Room"
-import { Role, type ApiResponse } from "../types"
 
 const JWT_SECRET = getEnv("JWT_SECRET")
 
@@ -60,7 +60,7 @@ export async function getRoom(req: Request, res: GetRoomResponse) {
 }
 
 export async function deleteRoom(req: Request, res: ApiResponse) {
-  if (req.role !== "host") {
+  if (req.role !== Role.HOST) {
     return res
       .status(403)
       .json({ data: null, error: { message: "Forbidden", code: 403 } })
