@@ -6,7 +6,7 @@
   "scripts": {
     "dev": "nodemon",
     "format": "npx prettier . --write",
-    "migrate": "knex migrate:latest --env production"
+    "migrate": "knex migrate:latest --env production",
     "rollback": "knex migrate:rollback --env production"
   },
   "keywords": [],
