@@ -18,18 +18,13 @@ npm install
 
 ### Server
 
-Create a .env file with these values:
-
-```
-- JWT_SECRET: can be any string
-- DATABASE_URL: needs to be your connection to the postgresql db
-```
+Create a .env file with a JWT secret and database credentials for MySQL. Check .env.example file.
 
 Run migrations
 
 ```
 cd server
-npx prisma migrate dev
+npm run migrate
 ```
 
 Run npm install
