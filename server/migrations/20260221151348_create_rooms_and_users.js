@@ -21,9 +21,9 @@ export const up = async function (knex) {
 
 export const down = async function (knex) {
   await knex.raw(`
-    DROP TABLE users;
+    DROP TABLE IF EXISTS users;
   `)
   await knex.raw(`
-    DROP TABLE rooms;
+    DROP TABLE IF EXISTS rooms;
   `)
 }
