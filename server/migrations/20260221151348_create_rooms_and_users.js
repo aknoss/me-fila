@@ -1,35 +1,29 @@
-/**
- * @param { import("knex").Knex } knex
- * @returns { Promise<void> }
- */
-exports.up = async function (knex) {
+export const up = async function (knex) {
   await knex.raw(`
     CREATE TABLE rooms (
-      id CHAR(5) COLLATE utf8mb4_bin,
+      id CHAR(5) COLLATE utf8mb4_bin PRIMARY KEY,
       name VARCHAR(255) NOT NULL,
       created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-      updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
-      PRIMARY KEY (id)
+      updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
     );
+  `)
+  await knex.raw(`
     CREATE TABLE users (
-      id CHAR() DEFAULT (UUID()),
+      id CHAR(36) DEFAULT (UUID()) PRIMARY KEY,
       name VARCHAR(255) NOT NULL,
       room_id CHAR(5) COLLATE utf8mb4_bin,
       created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
       updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
-      PRIMARY KEY (id),
       FOREIGN KEY (room_id) REFERENCES rooms(id)
     );
   `)
 }
 
-/**
- * @param { import("knex").Knex } knex
- * @returns { Promise<void> }
- */
-exports.down = async function (knex) {
+export const down = async function (knex) {
+  await knex.raw(`
+    DROP TABLE users;
+  `)
   await knex.raw(`
     DROP TABLE rooms;
-    DROP TABLE users;
   `)
 }
