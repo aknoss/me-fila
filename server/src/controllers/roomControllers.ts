@@ -1,7 +1,6 @@
 import jwt from "jsonwebtoken"
 import { logger } from "../logger"
 import { getEnv } from "../env"
-import { prisma } from "../prisma"
 import { generateUniqueBase62 } from "../utils/base62"
 import { Role, type ApiResponse } from "../types"
 import type { Request } from "express"
