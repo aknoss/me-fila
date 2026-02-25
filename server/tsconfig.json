@@ -9,10 +9,7 @@
     "strict": true,
     "noImplicitAny": true,
     "esModuleInterop": true,
-    "resolveJsonModule": true,
-    "paths": {
-      "@types": ["../shared/types.ts"]
-    }
+    "resolveJsonModule": true
   },
   "include": ["src", "generated"],
   "exclude": ["node_modules", "dist"]

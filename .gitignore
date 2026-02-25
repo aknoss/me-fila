@@ -1,0 +1,6 @@
+/node_modules
+/build
+/generated
+/server/build
+/client/.env
+/server/.env
