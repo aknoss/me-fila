@@ -1,4 +1,4 @@
-import { PrismaClient } from "../../generated/prisma/client"
+import { db } from "../db"
 
 const BASE62_CHARSET =
   "0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ"
@@ -16,11 +16,11 @@ export function generateBase62() {
   return id
 }
 
-export async function generateUniqueBase62(prisma: PrismaClient) {
+export async function generateUniqueBase62() {
   for (let i = 0; i < MAX_TRIES; i++) {
     const id = generateBase62()
-    const existingRoom = await prisma.room.findUnique({ where: { id } })
-    if (!existingRoom) {
+    const [rows] = await db.execute("SELECT 1 FROM rooms WHERE id = ?", [id])
+    if (Array.isArray(rows) && rows.length === 0) {
       return id
     }
   }
