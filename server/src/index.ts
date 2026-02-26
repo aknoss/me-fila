@@ -1,9 +1,9 @@
 import dotenv from "dotenv"
-import express, { Request, Response } from "express"
+import express, { Response } from "express"
 import cors from "cors"
 import morgan from "morgan"
 import { roomRoutes } from "./routes/roomRoutes"
-import { ApiResponse } from "./types"
+import { ApiResponse } from "@me-fila/shared/types"
 import { logger } from "./logger"
 import { userRoutes } from "./routes/userRoutes"
 import { errorHandler } from "./middleware/errorHandler"
@@ -23,7 +23,7 @@ app.use(
 app.use("/room", roomRoutes)
 app.use("/user", userRoutes)
 
-app.get("/", (_req, res: ApiResponse<{ message: string }>) => {
+app.get("/", (_req, res: Response<ApiResponse<{ message: string }>>) => {
   res.json({
     data: { message: "Welcome to the Me Fila API. Check docs for how to use." },
     error: null,

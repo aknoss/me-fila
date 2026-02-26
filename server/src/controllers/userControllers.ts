@@ -1,29 +1,35 @@
 import jwt from "jsonwebtoken"
 import { getEnv } from "../env"
 import { logger } from "../logger"
-import { prisma } from "../prisma"
-import { Role, type ApiResponse } from "../types"
-import type { Request } from "express"
-import type { UserModel } from "../../generated/prisma/models/User"
+import { ApiResponse, Role, User } from "@me-fila/shared/types"
+import type { Request, Response } from "express"
+import { db } from "../db"
+import { ResultSetHeader } from "mysql2"
 
 const JWT_SECRET = getEnv("JWT_SECRET")
 
 type CreateUserRequestBody = { name: string }
-type CreateUserResponse = ApiResponse<{ user: UserModel; accessToken: string }>
+type CreateUserResponse = Response<
+  ApiResponse<{ user: User; accessToken: string }>
+>
 export async function createUser(
   req: Request<{}, {}, CreateUserRequestBody>,
   res: CreateUserResponse
 ) {
   const name = req.body.name
 
-  const user = await prisma.user.create({ data: { name } })
+  const [rows] = await db.execute<ResultSetHeader>(
+    "INSERT INTO users (name) VALUES (?)",
+    [name]
+  )
+  const user = rows[0]
   const accessToken = jwt.sign({ id: user.id, role: "user" }, JWT_SECRET!)
 
   logger.info("User created successfully", { data: user })
   res.status(201).json({ data: { user, accessToken }, error: null })
 }
 
-type GetUserResponse = ApiResponse<{ user: UserModel }>
+type GetUserResponse = Response<ApiResponse<{ user: User }>>
 export async function getUser(req: Request, res: GetUserResponse) {
   if (req.role !== Role.USER) {
     return res
@@ -50,7 +56,7 @@ export async function getUser(req: Request, res: GetUserResponse) {
 type DeleteUserParams = { userId: string }
 export async function deleteUser(
   req: Request<DeleteUserParams>,
-  res: ApiResponse<string>
+  res: Response<ApiResponse<string>>
 ) {
   if (req.role !== Role.USER) {
     return res

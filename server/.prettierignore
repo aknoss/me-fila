@@ -2,4 +2,3 @@ build
 coverage
 generated
 node_modules
-prisma
