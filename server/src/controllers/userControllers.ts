@@ -18,11 +18,19 @@ export async function createUser(
 ) {
   const name = req.body.name
 
-  const [rows] = await db.execute<ResultSetHeader>(
+  const [result] = await db.execute<ResultSetHeader>(
     "INSERT INTO users (name) VALUES (?)",
     [name]
   )
-  const user = rows[0]
+
+  if (result.affectedRows === 0) {
+    logger.warn("User already exists", { name: req.body.name })
+    return res.status(400).json({
+      data: null,
+      error: { message: "User already exists", code: 404 },
+    })
+  }
+
   const accessToken = jwt.sign({ id: user.id, role: "user" }, JWT_SECRET!)
 
   logger.info("User created successfully", { data: user })
