@@ -31,7 +31,12 @@ export async function createUser(
     })
   }
 
-  const accessToken = jwt.sign({ id: user.id, role: "user" }, JWT_SECRET!)
+  const user: User = {
+    id: result.insertId.toString(),
+    name: req.body.name,
+  }
+
+  const accessToken = jwt.sign({ id: user.id, role: Role.USER }, JWT_SECRET!)
 
   logger.info("User created successfully", { data: user })
   res.status(201).json({ data: { user, accessToken }, error: null })
