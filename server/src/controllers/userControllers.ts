@@ -5,6 +5,7 @@ import { ApiResponse, Role, User } from "@me-fila/shared/types"
 import type { Request, Response } from "express"
 import { db } from "../db"
 import { ResultSetHeader } from "mysql2"
+import { UserRow } from "../dbTypes"
 
 const JWT_SECRET = getEnv("JWT_SECRET")
 
@@ -50,9 +51,11 @@ export async function getUser(req: Request, res: GetUserResponse) {
       .json({ data: null, error: { message: "Forbidden", code: 403 } })
   }
   const userId = req.id
-  const user = await prisma.user.findFirst({
-    where: { id: userId },
-  })
+  const [rows] = await db.execute<UserRow[]>(
+    "SELECT * FROM users WHERE id = ? LIMIT 1",
+    [userId]
+  )
+  const user = rows[0]
   if (!user) {
     const error = {
       message: "Could not find user",
@@ -108,7 +111,7 @@ export async function deleteUser(
 }
 
 type JoinRoomParams = { roomId: string }
-type JoinRoomResponse = ApiResponse<UserModel>
+type JoinRoomResponse = Response<ApiResponse<UserModel>>
 export async function joinRoom(
   req: Request<{}, {}, JoinRoomParams>,
   res: JoinRoomResponse
