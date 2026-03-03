@@ -81,10 +81,11 @@ export async function deleteUser(
   }
   const userId = req.id
 
-  const user = await prisma.user.findUnique({
-    where: { id: userId },
-    select: { participatedRoomId: true },
-  })
+  const [rows] = await db.execute<UserRow[]>(
+    "SELECT * FROM users WHERE id = ? LIMIT 1",
+    [userId]
+  )
+  const user = rows[0]
 
   if (!user) {
     logger.error("Could not find user", { userId })
@@ -95,16 +96,17 @@ export async function deleteUser(
     return
   }
 
-  if (user.participatedRoomId) {
-    await prisma.user.update({
-      where: { id: userId },
-      data: { participatedRoomId: null },
-    })
+  if (user.room_id) {
+    const [result] = await db.execute<ResultSetHeader>(
+      "UPDATE users SET room_id = NULL WHERE id = ?",
+      [userId]
+    )
   }
 
-  await prisma.user.delete({
-    where: { id: userId },
-  })
+  const [result] = await db.execute<ResultSetHeader>(
+    "DELETE FROM users WHERE id = ?",
+    [userId]
+  )
 
   logger.error("User deleted successfully", { userId })
   res.status(200).json({ data: "User deleted successfully", error: null })
