@@ -5,7 +5,7 @@ import { ApiResponse, Role, User } from "@me-fila/shared/types"
 import type { Request, Response } from "express"
 import { db } from "../db"
 import { ResultSetHeader } from "mysql2"
-import { UserRow } from "../dbTypes"
+import { RoomRow, UserRow } from "../dbTypes"
 
 const JWT_SECRET = getEnv("JWT_SECRET")
 
@@ -51,11 +51,11 @@ export async function getUser(req: Request, res: GetUserResponse) {
       .json({ data: null, error: { message: "Forbidden", code: 403 } })
   }
   const userId = req.id
-  const [rows] = await db.execute<UserRow[]>(
+  const [userRows] = await db.execute<UserRow[]>(
     "SELECT * FROM users WHERE id = ? LIMIT 1",
     [userId]
   )
-  const user = rows[0]
+  const user = userRows[0]
   if (!user) {
     const error = {
       message: "Could not find user",
@@ -81,11 +81,11 @@ export async function deleteUser(
   }
   const userId = req.id
 
-  const [rows] = await db.execute<UserRow[]>(
+  const [userRows] = await db.execute<UserRow[]>(
     "SELECT * FROM users WHERE id = ? LIMIT 1",
     [userId]
   )
-  const user = rows[0]
+  const user = userRows[0]
 
   if (!user) {
     logger.error("Could not find user", { userId })
@@ -96,24 +96,14 @@ export async function deleteUser(
     return
   }
 
-  if (user.room_id) {
-    const [result] = await db.execute<ResultSetHeader>(
-      "UPDATE users SET room_id = NULL WHERE id = ?",
-      [userId]
-    )
-  }
-
-  const [result] = await db.execute<ResultSetHeader>(
-    "DELETE FROM users WHERE id = ?",
-    [userId]
-  )
+  await db.execute<ResultSetHeader>("DELETE FROM users WHERE id = ?", [userId])
 
   logger.error("User deleted successfully", { userId })
   res.status(200).json({ data: "User deleted successfully", error: null })
 }
 
 type JoinRoomParams = { roomId: string }
-type JoinRoomResponse = Response<ApiResponse<UserModel>>
+type JoinRoomResponse = Response<ApiResponse<User>>
 export async function joinRoom(
   req: Request<{}, {}, JoinRoomParams>,
   res: JoinRoomResponse
@@ -126,9 +116,11 @@ export async function joinRoom(
   const roomId = req.body.roomId
   const userId = req.id
 
-  const roomCount = await prisma.room.count({ where: { id: roomId } })
-  const roomExists = roomCount > 0
-  if (!roomExists) {
+  const [roomRows] = await db.execute<RoomRow[]>(
+    "SELECT * FROM rooms WHERE id = ? LIMIT 1",
+    [roomId]
+  )
+  if (!roomRows[0]) {
     logger.error("Could not find room to join", { roomId })
     res.status(404).json({
       data: null,
@@ -137,19 +129,25 @@ export async function joinRoom(
     return
   }
 
-  try {
-    const updatedUser = await prisma.user.update({
-      where: { id: userId },
-      data: { participatedRoomId: roomId },
-    })
-
-    logger.error("User joined room successfully", { updatedUser })
-    res.status(200).json({ data: updatedUser, error: null })
-  } catch (error) {
-    logger.error("Could not find user", { error })
-    res.status(500).json({
+  const [userRows] = await db.execute<UserRow[]>(
+    "SELECT * FROM users WHERE id = ? LIMIT 1",
+    [userId]
+  )
+  if (!userRows[0]) {
+    logger.error("Could not find user", { userId })
+    res.status(404).json({
       data: null,
       error: { message: "Could not find user", code: 404 },
     })
+    return
   }
+
+  await db.execute<ResultSetHeader>(
+    "UPDATE users SET room_id = ? WHERE id = ?",
+    [roomId, userId]
+  )
+
+  const updatedUser: User = { ...userRows[0], room_id: roomId }
+  logger.info("User joined room successfully", { updatedUser })
+  res.status(200).json({ data: updatedUser, error: null })
 }
