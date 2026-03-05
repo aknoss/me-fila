@@ -10,7 +10,7 @@ import type { UseMutationOptions } from "@tanstack/react-query"
 
 type useCreateUserMutationSuccessResponse = ApiSuccessResponse<{
   user: User
-  token: string
+  accessToken: string
 }>
 type useCreateUserMutationVariables = { name: string }
 export function useCreateUserMutation(
