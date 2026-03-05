@@ -8,14 +8,14 @@ import { RoomRow } from "../dbTypes"
 import { ResultSetHeader } from "mysql2"
 import type { Request, Response } from "express"
 
+const JWT_SECRET = getEnv("JWT_SECRET")
+
 type CreateRoomRequestBody = { name: string }
 type CreateRoomResponse = ApiResponse<{ room: Room; accessToken: string }>
 export async function createRoom(
   req: Request<{}, {}, CreateRoomRequestBody>,
   res: Response<CreateRoomResponse>
 ) {
-  const JWT_SECRET = getEnv("JWT_SECRET")
-
   const name = req.body.name
   if (!name) {
     const error = {

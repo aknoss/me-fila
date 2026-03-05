@@ -7,6 +7,8 @@ import { db } from "../db"
 import { ResultSetHeader } from "mysql2"
 import { RoomRow, UserRow } from "../dbTypes"
 
+const JWT_SECRET = getEnv("JWT_SECRET")
+
 type CreateUserRequestBody = { name: string }
 type CreateUserResponse = Response<
   ApiResponse<{ user: User; accessToken: string }>
@@ -15,7 +17,6 @@ export async function createUser(
   req: Request<{}, {}, CreateUserRequestBody>,
   res: CreateUserResponse
 ) {
-  const JWT_SECRET = getEnv("JWT_SECRET")
   const name = req.body.name
 
   const [result] = await db.execute<ResultSetHeader>(

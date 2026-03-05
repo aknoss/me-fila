@@ -4,13 +4,13 @@ import { getEnv } from "../env"
 import type { Request, Response, NextFunction } from "express"
 import { Role } from "@me-fila/shared/types"
 
+const JWT_SECRET = getEnv("JWT_SECRET")
+
 export async function authenticate(
   req: Request,
   res: Response,
   next: NextFunction
 ) {
-  const JWT_SECRET = getEnv("JWT_SECRET")
-
   const authHeader = req.headers["authorization"]
   if (!authHeader || !authHeader.includes("Bearer ")) {
     const error = {

@@ -1,4 +1,4 @@
-import dotenv from "dotenv"
+import "dotenv/config"
 import express, { Response } from "express"
 import cors from "cors"
 import morgan from "morgan"
@@ -7,8 +7,6 @@ import { ApiResponse } from "@me-fila/shared/types"
 import { logger } from "./logger"
 import { userRoutes } from "./routes/userRoutes"
 import { errorHandler } from "./middleware/errorHandler"
-
-dotenv.config()
 
 const PORT = 5000
 const app = express()
