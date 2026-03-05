@@ -1,16 +1,16 @@
 import jwt from "jsonwebtoken"
 import { logger } from "../logger"
 import { getEnv } from "../env"
-import type { Request, NextFunction } from "express"
-import type { ApiResponse, Role } from "../types"
-
-const JWT_SECRET = getEnv("JWT_SECRET")
+import type { Request, Response, NextFunction } from "express"
+import { Role } from "@me-fila/shared/types"
 
 export async function authenticate(
   req: Request,
-  res: ApiResponse,
+  res: Response,
   next: NextFunction
 ) {
+  const JWT_SECRET = getEnv("JWT_SECRET")
+
   const authHeader = req.headers["authorization"]
   if (!authHeader || !authHeader.includes("Bearer ")) {
     const error = {

@@ -1,4 +1,4 @@
-import { Role } from "./types"
+import { Role } from "@me-fila/shared/types"
 
 declare global {
   namespace Express {
