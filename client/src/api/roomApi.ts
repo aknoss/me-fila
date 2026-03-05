@@ -55,7 +55,7 @@ export function useCreateRoomMutation(
 }
 
 type useDeleteRoomMutationApiSuccessResponse = ApiSuccessResponse<null>
-type useDeleteRoomMutationVariables = { token: string }
+type useDeleteRoomMutationVariables = { accessToken: string }
 export function useDeleteRoomMutation(
   options?: UseMutationOptions<
     useDeleteRoomMutationApiSuccessResponse,
