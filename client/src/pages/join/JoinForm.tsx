@@ -8,6 +8,7 @@ import { ButtonGroup } from "../../components/ButtonGroup"
 import { useCreateUserMutation, useJoinRoomMutation } from "../../api/userApi"
 import { useAuth } from "../../providers/useAuth"
 import { ErrorMessage } from "../../components/ErrorMessage"
+import { Role } from "../../providers/AuthProvider.types"
 
 export function JoinForm() {
   const [roomIdInput, setRoomIdInput] = useState("")
@@ -28,8 +29,8 @@ export function JoinForm() {
   } = useJoinRoomMutation({
     onSuccess: (data) => {
       login({
-        token: data.data.token,
-        role: "user",
+        accessToken: data.data.token,
+        role: Role.USER,
         username: data.data.name,
         roomId: data.data.participatedRoomId,
       })

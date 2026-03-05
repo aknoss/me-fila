@@ -1,10 +1,14 @@
 import { useMutation } from "@tanstack/react-query"
 import { API_METHOD, API_ROUTES } from "../constants/apiRoutes"
 import { fetchData } from "./fetchData"
-import type { User, SuccessResponse, ErrorResponse } from "../types"
+import {
+  ApiErrorResponse,
+  ApiSuccessResponse,
+  User,
+} from "@me-fila/shared/types"
 import type { UseMutationOptions } from "@tanstack/react-query"
 
-type useCreateUserMutationSuccessResponse = SuccessResponse<{
+type useCreateUserMutationSuccessResponse = ApiSuccessResponse<{
   user: User
   token: string
 }>
@@ -12,13 +16,13 @@ type useCreateUserMutationVariables = { name: string }
 export function useCreateUserMutation(
   options?: UseMutationOptions<
     useCreateUserMutationSuccessResponse,
-    ErrorResponse,
+    ApiErrorResponse,
     useCreateUserMutationVariables
   >
 ) {
   return useMutation<
     useCreateUserMutationSuccessResponse,
-    ErrorResponse,
+    ApiErrorResponse,
     useCreateUserMutationVariables
   >({
     ...options,
@@ -31,18 +35,18 @@ export function useCreateUserMutation(
   })
 }
 
-type useDeleteUserMutationSuccessResponse = SuccessResponse<null>
-type useDeleteUserMutationVariables = { token: string }
+type useDeleteUserMutationSuccessResponse = ApiSuccessResponse<null>
+type useDeleteUserMutationVariables = { accessToken: string }
 export function useDeleteUserMutation(
   options?: UseMutationOptions<
     useDeleteUserMutationSuccessResponse,
-    ErrorResponse,
+    ApiErrorResponse,
     useDeleteUserMutationVariables
   >
 ) {
   return useMutation<
     useDeleteUserMutationSuccessResponse,
-    ErrorResponse,
+    ApiErrorResponse,
     useDeleteUserMutationVariables
   >({
     ...options,
@@ -55,18 +59,18 @@ export function useDeleteUserMutation(
   })
 }
 
-type useJoinRoomMutationSuccessResponse = SuccessResponse<User>
-type useJoinRoomMutationVariables = { token: string; roomId: string }
+type useJoinRoomMutationSuccessResponse = ApiSuccessResponse<User>
+type useJoinRoomMutationVariables = { accessToken: string; roomId: string }
 export function useJoinRoomMutation(
   options?: UseMutationOptions<
     useJoinRoomMutationSuccessResponse,
-    ErrorResponse,
+    ApiErrorResponse,
     useJoinRoomMutationVariables
   >
 ) {
   return useMutation<
     useJoinRoomMutationSuccessResponse,
-    ErrorResponse,
+    ApiErrorResponse,
     useJoinRoomMutationVariables
   >({
     ...options,
