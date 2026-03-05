@@ -28,14 +28,11 @@ export async function createRoom(
   }
 
   const id = await generateUniqueBase62()
-  const [rows] = await db.execute<RoomRow[]>(
-    "INSERT INTO rooms (id, name) VALUES (?, ?)",
-    [id, name]
-  )
-  const room = rows[0]
-  const accessToken = jwt.sign({ id: room.id, role: "host" }, JWT_SECRET!)
+  await db.execute("INSERT INTO rooms (id, name) VALUES (?, ?)", [id, name])
 
-  logger.info("Room created successfully", { data: room })
+  const room = { id, name }
+  const accessToken = jwt.sign({ id: room.id, role: Role.HOST }, JWT_SECRET!)
+
   res.status(201).json({ data: { room, accessToken }, error: null })
 }
 
@@ -61,7 +58,7 @@ export async function getRoom(req: Request, res: Response<GetRoomResponse>) {
     res.status(404).json({ data: null, error })
     return
   }
-  logger.info("Room found successfully", { data: room })
+
   res.status(200).json({ data: { room }, error: null })
 }
 

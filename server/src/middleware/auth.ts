@@ -1,8 +1,8 @@
 import jwt from "jsonwebtoken"
 import { logger } from "../logger"
 import { getEnv } from "../env"
-import type { Request, Response, NextFunction } from "express"
 import { Role } from "@me-fila/shared/types"
+import type { Request, Response, NextFunction } from "express"
 
 const JWT_SECRET = getEnv("JWT_SECRET")
 
