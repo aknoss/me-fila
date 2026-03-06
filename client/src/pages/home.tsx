@@ -4,11 +4,12 @@ import { ButtonLink } from "../components/ButtonLink"
 import { Wrapper } from "../components/Wrapper"
 import { ROUTES } from "../constants/routes"
 import { useAuth } from "../providers/useAuth"
+import { Role } from "@me-fila/shared/types"
 
 export function HomePage() {
   const { accessToken, role } = useAuth()
 
-  if (accessToken && role === "host") {
+  if (accessToken && role === Role.HOST) {
     return <Navigate to={ROUTES.HOST} />
   }
 

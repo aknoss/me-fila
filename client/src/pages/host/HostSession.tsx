@@ -5,6 +5,7 @@ import { useDeleteRoomMutation, useGetRoomQuery } from "../../api/roomApi"
 import { ROUTES } from "../../constants/routes"
 import { ErrorMessage } from "../../components/ErrorMessage"
 import { useAuth } from "../../providers/useAuth"
+import { Role } from "../../providers/AuthProvider.types"
 
 const ROOM_REFETCH_INTERVAL = 3000
 
@@ -34,7 +35,7 @@ export function HostSession() {
     },
   })
 
-  if (!accessToken || role !== "host" || !roomId) {
+  if (!accessToken || role !== Role.HOST || !roomId) {
     return <Navigate to={ROUTES.HOME} replace />
   }
 
