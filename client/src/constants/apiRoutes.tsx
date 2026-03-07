@@ -10,7 +10,6 @@ export enum API_METHOD {
 }
 
 export const API_ROUTES = {
-  ROOM: BACKEND_URL + "/room",
-  USER: BACKEND_URL + "/user",
-  USER_JOIN: BACKEND_URL + "/user/join",
+  ROOMS: BACKEND_URL + "/rooms",
+  USERS: BACKEND_URL + "/users",
 }

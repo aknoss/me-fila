@@ -18,8 +18,8 @@ app.use(
   })
 )
 
-app.use("/room", roomRoutes)
-app.use("/user", userRoutes)
+app.use("/rooms", roomRoutes)
+app.use("/users", userRoutes)
 
 app.get("/", (_req, res: Response<ApiResponse<{ message: string }>>) => {
   res.json({

@@ -28,7 +28,7 @@ export function useCreateUserMutation(
     ...options,
     mutationFn: ({ name }) =>
       fetchData({
-        url: API_ROUTES.USER,
+        url: API_ROUTES.USERS,
         method: API_METHOD.POST,
         body: { name },
       }),
@@ -36,7 +36,7 @@ export function useCreateUserMutation(
 }
 
 type useDeleteUserMutationSuccessResponse = ApiSuccessResponse<null>
-type useDeleteUserMutationVariables = { accessToken: string }
+type useDeleteUserMutationVariables = { userId: string; accessToken: string }
 export function useDeleteUserMutation(
   options?: UseMutationOptions<
     useDeleteUserMutationSuccessResponse,
@@ -50,35 +50,10 @@ export function useDeleteUserMutation(
     useDeleteUserMutationVariables
   >({
     ...options,
-    mutationFn: ({ accessToken }) =>
+    mutationFn: ({ userId, accessToken }) =>
       fetchData({
-        url: API_ROUTES.USER,
+        url: `${API_ROUTES.USERS}/${userId}`,
         method: API_METHOD.DELETE,
-        accessToken,
-      }),
-  })
-}
-
-type useJoinRoomMutationSuccessResponse = ApiSuccessResponse<User>
-type useJoinRoomMutationVariables = { accessToken: string; roomId: string }
-export function useJoinRoomMutation(
-  options?: UseMutationOptions<
-    useJoinRoomMutationSuccessResponse,
-    ApiErrorResponse,
-    useJoinRoomMutationVariables
-  >
-) {
-  return useMutation<
-    useJoinRoomMutationSuccessResponse,
-    ApiErrorResponse,
-    useJoinRoomMutationVariables
-  >({
-    ...options,
-    mutationFn: ({ accessToken, roomId }) =>
-      fetchData({
-        url: API_ROUTES.USER_JOIN,
-        method: API_METHOD.PATCH,
-        body: { roomId },
         accessToken,
       }),
   })

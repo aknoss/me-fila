@@ -13,6 +13,9 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   const [username, setUsername] = useState<string | null>(
     localStorage.getItem("username")
   )
+  const [userId, setUserId] = useState<string | null>(
+    localStorage.getItem("userId")
+  )
 
   const login: AuthContextType["login"] = useCallback(
     ({
@@ -20,6 +23,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
       role: newRole,
       roomId: newRoomId,
       username: newUsername,
+      userId: newUserId,
     }) => {
       localStorage.setItem("accessToken", newAccessToken)
       localStorage.setItem("roomId", newRoomId)
@@ -29,6 +33,10 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
       if (newUsername) {
         localStorage.setItem("username", newUsername)
         setUsername(newUsername)
+      }
+      if (newUserId) {
+        localStorage.setItem("userId", newUserId)
+        setUserId(newUserId)
       }
     },
     []
@@ -40,6 +48,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     setRole(null)
     setRoomId(null)
     setUsername(null)
+    setUserId(null)
   }, [])
 
   return (
@@ -49,6 +58,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
         role,
         roomId,
         username,
+        userId,
         login,
         logout,
       }}

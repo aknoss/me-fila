@@ -1,18 +1,11 @@
 import express from "express"
-import {
-  createUser,
-  getUser,
-  deleteUser,
-  joinRoom,
-} from "../controllers/userControllers"
-import { authenticate } from "../middleware/auth"
+import { createUser, deleteUser } from "../controllers/userControllers"
+import { authenticate, authorize } from "../middleware/auth"
+import { Role } from "@me-fila/shared/types"
 
 const userRoutes = express.Router()
 
 userRoutes.post("/", createUser)
-userRoutes.get("/", authenticate, getUser)
-userRoutes.delete("/", authenticate, deleteUser)
-
-userRoutes.patch("/join", authenticate, joinRoom)
+userRoutes.delete("/:id", authenticate, authorize(Role.USER, "userId"), deleteUser)
 
 export { userRoutes }

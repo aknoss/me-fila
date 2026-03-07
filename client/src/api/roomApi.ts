@@ -6,73 +6,98 @@ import {
 } from "@tanstack/react-query"
 import { API_METHOD, API_ROUTES } from "../constants/apiRoutes"
 import { fetchData } from "./fetchData"
-import type { Room, ApiApiSuccessResponse, ApiApiErrorResponse } from "@me-fila/shared/types"
+import type { Room, User, ApiSuccessResponse, ApiErrorResponse } from "@me-fila/shared/types"
 
-const GET_ROOM_QUERY_KEY = "get-room-query-key"
-
-type useGetRoomQueryApiSuccessResponse = ApiSuccessResponse<{ room: Room }>
-export function useGetRoomQuery(
-  accessToken: string,
-  options?: UseQueryOptions<useGetRoomQueryApiSuccessResponse, ApiErrorResponse>
-) {
-  return useQuery<useGetRoomQueryApiSuccessResponse, ApiErrorResponse>({
-    ...options,
-    queryKey: [GET_ROOM_QUERY_KEY, accessToken],
-    queryFn: () =>
-      fetchData({
-        url: API_ROUTES.ROOM,
-        method: API_METHOD.GET,
-        accessToken,
-      }),
-  })
-}
-
-type useCreateRoomMutationApiSuccessResponse = ApiSuccessResponse<{
+type useCreateRoomMutationSuccessResponse = ApiSuccessResponse<{
   room: Room
   accessToken: string
 }>
 type useCreateRoomMutationVariables = { name: string }
 export function useCreateRoomMutation(
   options?: UseMutationOptions<
-    useCreateRoomMutationApiSuccessResponse,
+    useCreateRoomMutationSuccessResponse,
     ApiErrorResponse,
     useCreateRoomMutationVariables
   >
 ) {
   return useMutation<
-    useCreateRoomMutationApiSuccessResponse,
+    useCreateRoomMutationSuccessResponse,
     ApiErrorResponse,
     useCreateRoomMutationVariables
   >({
     ...options,
     mutationFn: ({ name }) =>
       fetchData({
-        url: API_ROUTES.ROOM,
+        url: API_ROUTES.ROOMS,
         method: API_METHOD.POST,
         body: { name },
       }),
   })
 }
 
-type useDeleteRoomMutationApiSuccessResponse = ApiSuccessResponse<null>
-type useDeleteRoomMutationVariables = { accessToken: string }
+type useDeleteRoomMutationSuccessResponse = ApiSuccessResponse<null>
+type useDeleteRoomMutationVariables = { roomId: string; accessToken: string }
 export function useDeleteRoomMutation(
   options?: UseMutationOptions<
-    useDeleteRoomMutationApiSuccessResponse,
+    useDeleteRoomMutationSuccessResponse,
     ApiErrorResponse,
     useDeleteRoomMutationVariables
   >
 ) {
   return useMutation<
-    useDeleteRoomMutationApiSuccessResponse,
+    useDeleteRoomMutationSuccessResponse,
     ApiErrorResponse,
     useDeleteRoomMutationVariables
   >({
     ...options,
-    mutationFn: ({ accessToken }) =>
+    mutationFn: ({ roomId, accessToken }) =>
       fetchData({
-        url: API_ROUTES.ROOM,
+        url: `${API_ROUTES.ROOMS}/${roomId}`,
         method: API_METHOD.DELETE,
+        accessToken,
+      }),
+  })
+}
+
+const GET_ROOM_USERS_QUERY_KEY = "get-room-users-query-key"
+
+type useGetRoomUsersQuerySuccessResponse = ApiSuccessResponse<{ users: User[] }>
+export function useGetRoomUsersQuery(
+  roomId: string,
+  accessToken: string,
+  options?: UseQueryOptions<useGetRoomUsersQuerySuccessResponse, ApiErrorResponse>
+) {
+  return useQuery<useGetRoomUsersQuerySuccessResponse, ApiErrorResponse>({
+    ...options,
+    queryKey: [GET_ROOM_USERS_QUERY_KEY, roomId, accessToken],
+    queryFn: () =>
+      fetchData({
+        url: `${API_ROUTES.ROOMS}/${roomId}/users`,
+        method: API_METHOD.GET,
+        accessToken,
+      }),
+  })
+}
+
+type useJoinRoomMutationSuccessResponse = ApiSuccessResponse<User>
+type useJoinRoomMutationVariables = { roomId: string; accessToken: string }
+export function useJoinRoomMutation(
+  options?: UseMutationOptions<
+    useJoinRoomMutationSuccessResponse,
+    ApiErrorResponse,
+    useJoinRoomMutationVariables
+  >
+) {
+  return useMutation<
+    useJoinRoomMutationSuccessResponse,
+    ApiErrorResponse,
+    useJoinRoomMutationVariables
+  >({
+    ...options,
+    mutationFn: ({ roomId, accessToken }) =>
+      fetchData({
+        url: `${API_ROUTES.ROOMS}/${roomId}/users`,
+        method: API_METHOD.POST,
         accessToken,
       }),
   })

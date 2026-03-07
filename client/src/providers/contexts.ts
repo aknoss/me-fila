@@ -6,6 +6,7 @@ export const AuthContext = createContext<AuthContextType>({
   role: null,
   roomId: null,
   username: null,
+  userId: null,
   login: () => {},
   logout: () => {},
 })

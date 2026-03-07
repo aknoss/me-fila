@@ -1,7 +1,7 @@
 import { Navigate } from "react-router"
 import { Wrapper } from "../../components/Wrapper"
 import { Button } from "../../components/Button"
-import { useDeleteRoomMutation, useGetRoomQuery } from "../../api/roomApi"
+import { useDeleteRoomMutation, useGetRoomUsersQuery } from "../../api/roomApi"
 import { ROUTES } from "../../constants/routes"
 import { ErrorMessage } from "../../components/ErrorMessage"
 import { useAuth } from "../../providers/useAuth"
@@ -12,7 +12,8 @@ const ROOM_REFETCH_INTERVAL = 3000
 export function HostSession() {
   const { accessToken, role, roomId, logout } = useAuth()
 
-  const { data: roomData, isError: isGetRoomError } = useGetRoomQuery(
+  const { data: usersData, isError: isGetUsersError } = useGetRoomUsersQuery(
+    roomId!,
     accessToken!,
     {
       queryKey: [],
@@ -40,7 +41,7 @@ export function HostSession() {
   }
 
   const handleDeleteQueue = () => {
-    mutate({ accessToken })
+    mutate({ roomId, accessToken })
   }
 
   return (
@@ -49,16 +50,16 @@ export function HostSession() {
       <Button onClick={handleDeleteQueue} isLoading={isDeleteRoomPending}>
         Deletar Fila
       </Button>
-      {roomData ? (
-        roomData.data.room.participants.length > 0 ? (
-          roomData?.data.room.participants.map((item) => (
+      {usersData ? (
+        usersData.data.users.length > 0 ? (
+          usersData.data.users.map((item) => (
             <p key={item.id}>{item.name}</p>
           ))
         ) : (
           <p>A lista está vazia</p>
         )
       ) : null}
-      {isGetRoomError ||
+      {isGetUsersError ||
         (isDeleteRoomError && (
           <ErrorMessage>
             Algo deu errado. Por favor tente novamente

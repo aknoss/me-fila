@@ -1,12 +1,12 @@
-export type Room = {
-  id: string;
-  name: string;
-};
-
 export type User = {
   id: string;
   name: string;
   room_id?: string;
+};
+
+export type Room = {
+  id: string;
+  name: string;
 };
 
 export type ApiSuccessResponse<T> = {

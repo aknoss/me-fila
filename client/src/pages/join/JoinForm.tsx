@@ -1,11 +1,12 @@
-import { useState } from "react"
+import { useRef, useState } from "react"
 import { Input } from "../../components/Input"
 import { Wrapper } from "../../components/Wrapper"
 import { ButtonLink } from "../../components/ButtonLink"
 import { ROUTES } from "../../constants/routes"
 import { Button } from "../../components/Button"
 import { ButtonGroup } from "../../components/ButtonGroup"
-import { useCreateUserMutation, useJoinRoomMutation } from "../../api/userApi"
+import { useCreateUserMutation } from "../../api/userApi"
+import { useJoinRoomMutation } from "../../api/roomApi"
 import { useAuth } from "../../providers/useAuth"
 import { ErrorMessage } from "../../components/ErrorMessage"
 import { Role } from "../../providers/AuthProvider.types"
@@ -15,6 +16,7 @@ export function JoinForm() {
   const [roomIdError, setRoomIdError] = useState(false)
   const [username, setUsername] = useState("")
   const { login } = useAuth()
+  const userAccessTokenRef = useRef<string | null>(null)
 
   const {
     mutateAsync: createUserMutateAsync,
@@ -29,10 +31,11 @@ export function JoinForm() {
   } = useJoinRoomMutation({
     onSuccess: (data) => {
       login({
-        accessToken: data.data.token,
+        accessToken: userAccessTokenRef.current!,
         role: Role.USER,
         username: data.data.name,
-        roomId: data.data.participatedRoomId,
+        roomId: data.data.room_id!,
+        userId: data.data.id,
       })
     },
   })
@@ -55,8 +58,9 @@ export function JoinForm() {
     }
 
     const user = await createUserMutateAsync({ name: username })
+    userAccessTokenRef.current = user.data.accessToken
     await joinRoomMutateAsync({
-      accessToken: user.data.token,
+      accessToken: user.data.accessToken,
       roomId: roomIdInput,
     })
   }
