@@ -30,7 +30,7 @@ export function HostSession() {
       logout()
     },
     onError: (error) => {
-      if (error.error.error.code === 404) {
+      if (error.error.code === 404) {
         logout()
       }
     },
@@ -52,9 +52,7 @@ export function HostSession() {
       </Button>
       {usersData ? (
         usersData.data.users.length > 0 ? (
-          usersData.data.users.map((item) => (
-            <p key={item.id}>{item.name}</p>
-          ))
+          usersData.data.users.map((item) => <p key={item.id}>{item.name}</p>)
         ) : (
           <p>A lista está vazia</p>
         )
