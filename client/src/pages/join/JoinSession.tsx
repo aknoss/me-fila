@@ -7,9 +7,11 @@ import { useDeleteUserMutation } from "../../api/userApi"
 import { Role } from "../../providers/AuthProvider.types"
 
 export function JoinSession() {
-  const { accessToken, role, username, roomId, userId } = useAuth()
+  const { accessToken, role, username, roomId, userId, logout } = useAuth()
 
-  const { mutate: deleteUserMutate } = useDeleteUserMutation()
+  const { mutate: deleteUserMutate } = useDeleteUserMutation({
+    onSuccess: () => logout(),
+  })
 
   const logoutAndDeleteUser = () => {
     if (accessToken && role === Role.USER && userId) {
