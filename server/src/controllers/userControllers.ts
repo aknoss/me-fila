@@ -19,9 +19,10 @@ export async function createUser(
 ) {
   const name = req.body.name
 
+  const id = crypto.randomUUID()
   const [result] = await db.execute<ResultSetHeader>(
-    "INSERT INTO users (name) VALUES (?)",
-    [name]
+    "INSERT INTO users (id, name) VALUES (?, ?)",
+    [id, name]
   )
 
   if (result.affectedRows === 0) {
@@ -33,7 +34,7 @@ export async function createUser(
   }
 
   const user: User = {
-    id: result.insertId.toString(),
+    id,
     name: req.body.name,
   }
 
