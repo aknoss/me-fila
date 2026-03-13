@@ -15,6 +15,7 @@ export function JoinSession() {
   const { isError: isUserGone } = useGetUserQuery(userId!, accessToken!, {
     queryKey: [],
     refetchInterval: USER_REFETCH_INTERVAL,
+    refetchIntervalInBackground: false,
     enabled: !!userId && !!accessToken,
     retry: false,
   })

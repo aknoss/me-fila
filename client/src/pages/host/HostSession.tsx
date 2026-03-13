@@ -22,6 +22,7 @@ export function HostSession() {
     {
       queryKey: [],
       refetchInterval: ROOM_REFETCH_INTERVAL,
+      refetchIntervalInBackground: false,
     }
   )
 
