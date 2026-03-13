@@ -16,7 +16,7 @@ const ROOM_REFETCH_INTERVAL = 3000
 export function HostSession() {
   const { accessToken, role, roomId, logout } = useAuth()
 
-  const { data: usersData, isError: isGetUsersError } = useGetRoomUsersQuery(
+  const { data: usersData, isError: isGetUsersError, refetch: refetchUsers } = useGetRoomUsersQuery(
     roomId!,
     accessToken!,
     {
@@ -25,7 +25,9 @@ export function HostSession() {
     }
   )
 
-  const { mutate: removeUser } = useRemoveUserFromRoomMutation()
+  const { mutate: removeUser } = useRemoveUserFromRoomMutation({
+    onSuccess: () => refetchUsers(),
+  })
 
   const {
     mutate,

@@ -1,4 +1,4 @@
-import { useMutation } from "@tanstack/react-query"
+import { useMutation, useQuery, UseQueryOptions } from "@tanstack/react-query"
 import { API_METHOD, API_ROUTES } from "../constants/apiRoutes"
 import { fetchData } from "./fetchData"
 import {
@@ -31,6 +31,26 @@ export function useCreateUserMutation(
         url: API_ROUTES.USERS,
         method: API_METHOD.POST,
         body: { name },
+      }),
+  })
+}
+
+const GET_USER_QUERY_KEY = "get-user-query-key"
+
+type useGetUserQuerySuccessResponse = ApiSuccessResponse<User>
+export function useGetUserQuery(
+  userId: string,
+  accessToken: string,
+  options?: UseQueryOptions<useGetUserQuerySuccessResponse, ApiErrorResponse>
+) {
+  return useQuery<useGetUserQuerySuccessResponse, ApiErrorResponse>({
+    ...options,
+    queryKey: [GET_USER_QUERY_KEY, userId, accessToken],
+    queryFn: () =>
+      fetchData({
+        url: `${API_ROUTES.USERS}/${userId}`,
+        method: API_METHOD.GET,
+        accessToken,
       }),
   })
 }

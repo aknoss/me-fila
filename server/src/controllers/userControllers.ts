@@ -42,6 +42,29 @@ export async function createUser(
   res.status(201).json({ data: { user, accessToken }, error: null })
 }
 
+export async function getUser(
+  req: Request<{ id: string }>,
+  res: Response<ApiResponse<User>>
+) {
+  const userId = req.params.id
+
+  const [userRows] = await db.execute<UserRow[]>(
+    "SELECT id, name, room_id FROM users WHERE id = ? LIMIT 1",
+    [userId]
+  )
+
+  if (!userRows[0]) {
+    logger.error("Could not find user", { userId })
+    res.status(404).json({
+      data: null,
+      error: { message: "Could not find user", code: 404 },
+    })
+    return
+  }
+
+  res.status(200).json({ data: userRows[0], error: null })
+}
+
 export async function deleteUser(
   req: Request<{ id: string }>,
   res: Response<ApiResponse<null>>
