@@ -26,7 +26,6 @@ export async function createUser(
   )
 
   if (result.affectedRows === 0) {
-    logger.warn("User already exists", { name: req.body.name })
     return res.status(400).json({
       data: null,
       error: { message: "User already exists", code: 400 },
@@ -40,7 +39,6 @@ export async function createUser(
 
   const accessToken = jwt.sign({ userId: user.id, role: Role.USER }, JWT_SECRET)
 
-  logger.info("User created successfully", { data: user })
   res.status(201).json({ data: { user, accessToken }, error: null })
 }
 
@@ -67,6 +65,5 @@ export async function deleteUser(
 
   await db.execute<ResultSetHeader>("DELETE FROM users WHERE id = ?", [userId])
 
-  logger.info("User deleted successfully", { userId })
   res.status(200).json({ data: null, error: null })
 }

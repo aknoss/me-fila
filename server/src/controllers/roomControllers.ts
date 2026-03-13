@@ -48,14 +48,12 @@ export async function deleteRoom(
   )
 
   if (result.affectedRows === 0) {
-    logger.warn("No room found to delete", { roomId })
     return res.status(404).json({
       data: null,
       error: { message: "Could not find room to delete", code: 404 },
     })
   }
 
-  logger.info("Room deleted successfully")
   res.status(200).json({ data: null, error: null })
 }
 
@@ -127,6 +125,5 @@ export async function joinRoom(
   )
 
   const updatedUser: User = { ...userRows[0], room_id: roomId }
-  logger.info("User joined room successfully", { updatedUser })
   res.status(200).json({ data: updatedUser, error: null })
 }
