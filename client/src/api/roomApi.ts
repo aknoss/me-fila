@@ -79,6 +79,30 @@ export function useGetRoomUsersQuery(
   })
 }
 
+type useRemoveUserFromRoomMutationSuccessResponse = ApiSuccessResponse<null>
+type useRemoveUserFromRoomMutationVariables = { roomId: string; userId: string; accessToken: string }
+export function useRemoveUserFromRoomMutation(
+  options?: UseMutationOptions<
+    useRemoveUserFromRoomMutationSuccessResponse,
+    ApiErrorResponse,
+    useRemoveUserFromRoomMutationVariables
+  >
+) {
+  return useMutation<
+    useRemoveUserFromRoomMutationSuccessResponse,
+    ApiErrorResponse,
+    useRemoveUserFromRoomMutationVariables
+  >({
+    ...options,
+    mutationFn: ({ roomId, userId, accessToken }) =>
+      fetchData({
+        url: `${API_ROUTES.ROOMS}/${roomId}/users/${userId}`,
+        method: API_METHOD.DELETE,
+        accessToken,
+      }),
+  })
+}
+
 type useJoinRoomMutationSuccessResponse = ApiSuccessResponse<User>
 type useJoinRoomMutationVariables = { roomId: string; accessToken: string }
 export function useJoinRoomMutation(

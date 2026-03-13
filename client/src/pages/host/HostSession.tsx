@@ -1,7 +1,11 @@
 import { Navigate } from "react-router"
 import { Wrapper } from "../../components/Wrapper"
 import { Button } from "../../components/Button"
-import { useDeleteRoomMutation, useGetRoomUsersQuery } from "../../api/roomApi"
+import {
+  useDeleteRoomMutation,
+  useGetRoomUsersQuery,
+  useRemoveUserFromRoomMutation,
+} from "../../api/roomApi"
 import { ROUTES } from "../../constants/routes"
 import { ErrorMessage } from "../../components/ErrorMessage"
 import { useAuth } from "../../providers/useAuth"
@@ -20,6 +24,8 @@ export function HostSession() {
       refetchInterval: ROOM_REFETCH_INTERVAL,
     }
   )
+
+  const { mutate: removeUser } = useRemoveUserFromRoomMutation()
 
   const {
     mutate,
@@ -52,7 +58,26 @@ export function HostSession() {
       </Button>
       {usersData ? (
         usersData.data.users.length > 0 ? (
-          usersData.data.users.map((item) => <p key={item.id}>{item.name}</p>)
+          usersData.data.users.map((item) => (
+            <div
+              key={item.id}
+              className="flex items-center justify-between w-64 bg-[#1a1a1a] px-4 rounded-lg"
+            >
+              <p>{item.name}</p>
+              <button
+                onClick={() =>
+                  removeUser({
+                    roomId: roomId!,
+                    userId: item.id,
+                    accessToken: accessToken!,
+                  })
+                }
+                className="text-red-500 hover:text-red-700 cursor-pointer py-2 pl-2"
+              >
+                ✕
+              </button>
+            </div>
+          ))
         ) : (
           <p>A lista está vazia</p>
         )

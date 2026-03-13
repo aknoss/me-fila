@@ -127,3 +127,27 @@ export async function joinRoom(
   const updatedUser: User = { ...userRows[0], room_id: roomId }
   res.status(200).json({ data: updatedUser, error: null })
 }
+
+export async function removeUserFromRoom(
+  req: Request<{ id: string; userId: string }>,
+  res: Response<ApiResponse<null>>
+) {
+  const roomId = req.params.id
+  const userId = req.params.userId
+
+  const [result] = await db.execute<ResultSetHeader>(
+    "DELETE FROM users WHERE id = ? AND room_id = ?",
+    [userId, roomId]
+  )
+
+  if (result.affectedRows === 0) {
+    logger.error("Could not find user in room", { userId, roomId })
+    res.status(404).json({
+      data: null,
+      error: { message: "Could not find user in room", code: 404 },
+    })
+    return
+  }
+
+  res.status(200).json({ data: null, error: null })
+}
