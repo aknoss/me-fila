@@ -18,7 +18,9 @@ export function HomePage() {
       <h1 className="text-6xl">Me Fila</h1>
       <ButtonGroup>
         <ButtonLink to={ROUTES.JOIN}>Entrar em Fila</ButtonLink>
-        <ButtonLink to={ROUTES.HOST}>Criar Fila</ButtonLink>
+        <ButtonLink to={ROUTES.HOST} variant="secondary">
+          Criar Fila
+        </ButtonLink>
       </ButtonGroup>
     </Wrapper>
   )

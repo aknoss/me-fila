@@ -57,7 +57,9 @@ export function HostForm() {
           <Button type="submit" isLoading={isPending}>
             Continuar
           </Button>
-          <ButtonLink to={ROUTES.HOME}>Voltar</ButtonLink>
+          <ButtonLink to={ROUTES.HOME} variant="secondary">
+            Voltar
+          </ButtonLink>
           {isError && (
             <ErrorMessage>
               Algo deu errado. Por favor tente novamente

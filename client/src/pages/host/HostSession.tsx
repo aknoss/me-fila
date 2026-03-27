@@ -16,15 +16,15 @@ const ROOM_REFETCH_INTERVAL = 3000
 export function HostSession() {
   const { accessToken, role, roomId, logout } = useAuth()
 
-  const { data: usersData, isError: isGetUsersError, refetch: refetchUsers } = useGetRoomUsersQuery(
-    roomId!,
-    accessToken!,
-    {
-      queryKey: [],
-      refetchInterval: ROOM_REFETCH_INTERVAL,
-      refetchIntervalInBackground: false,
-    }
-  )
+  const {
+    data: usersData,
+    isError: isGetUsersError,
+    refetch: refetchUsers,
+  } = useGetRoomUsersQuery(roomId!, accessToken!, {
+    queryKey: [],
+    refetchInterval: ROOM_REFETCH_INTERVAL,
+    refetchIntervalInBackground: false,
+  })
 
   const { mutate: removeUser } = useRemoveUserFromRoomMutation({
     onSuccess: () => refetchUsers(),
@@ -56,7 +56,11 @@ export function HostSession() {
   return (
     <Wrapper>
       Id da fila: {roomId}
-      <Button onClick={handleDeleteQueue} isLoading={isDeleteRoomPending}>
+      <Button
+        onClick={handleDeleteQueue}
+        isLoading={isDeleteRoomPending}
+        variant="secondary"
+      >
         Deletar Fila
       </Button>
       {usersData ? (
@@ -64,7 +68,7 @@ export function HostSession() {
           usersData.data.users.map((item) => (
             <div
               key={item.id}
-              className="flex items-center justify-between w-64 bg-[#1a1a1a] px-4 rounded-lg"
+              className="flex items-center justify-between w-64 bg-section px-4 rounded-lg"
             >
               <p>{item.name}</p>
               <button
