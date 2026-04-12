@@ -3,5 +3,9 @@ type Props = {
 }
 
 export function ButtonGroup({ children }: Props) {
-  return <div className="flex flex-col gap-5 w-full">{children}</div>
+  return (
+    <div className="flex flex-col sm:flex-row-reverse gap-5 w-full">
+      {children}
+    </div>
+  )
 }
