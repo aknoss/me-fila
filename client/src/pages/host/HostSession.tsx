@@ -1,6 +1,5 @@
 import { Navigate } from "react-router"
 import { Wrapper } from "../../components/Wrapper"
-import { Button } from "../../components/Button"
 import {
   useDeleteRoomMutation,
   useGetRoomUsersQuery,
@@ -10,6 +9,8 @@ import { ROUTES } from "../../constants/routes"
 import { ErrorMessage } from "../../components/ErrorMessage"
 import { useAuth } from "../../providers/useAuth"
 import { Role } from "../../providers/AuthProvider.types"
+import Spinner from "../../assets/spinner.svg"
+import { Trash2 } from "lucide-react"
 
 const ROOM_REFETCH_INTERVAL = 3000
 
@@ -55,14 +56,21 @@ export function HostSession() {
 
   return (
     <Wrapper>
-      Id da fila: {roomId}
-      <Button
-        onClick={handleDeleteQueue}
-        isLoading={isDeleteRoomPending}
-        variant="secondary"
-      >
-        Deletar Fila
-      </Button>
+      <div className="flex items-center gap-3">
+        <span>Id da fila: {roomId}</span>
+        <button
+          onClick={handleDeleteQueue}
+          disabled={isDeleteRoomPending}
+          aria-label="Deletar fila"
+          className="text-red-500 hover:text-red-700 cursor-pointer p-2 disabled:opacity-50"
+        >
+          {isDeleteRoomPending ? (
+            <img src={Spinner} width={18} />
+          ) : (
+            <Trash2 size={18} />
+          )}
+        </button>
+      </div>
       {usersData ? (
         usersData.data.users.length > 0 ? (
           usersData.data.users.map((item) => (

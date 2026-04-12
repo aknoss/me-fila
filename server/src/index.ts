@@ -3,7 +3,6 @@ import express, { Response } from "express"
 import cors from "cors"
 import { roomRoutes } from "./routes/roomRoutes"
 import { ApiResponse } from "@me-fila/shared/types"
-import { logger } from "./logger"
 import { userRoutes } from "./routes/userRoutes"
 import { errorHandler } from "./middleware/errorHandler"
 
