@@ -67,7 +67,7 @@ export function JoinForm() {
 
   return (
     <Wrapper>
-      <h1 className="text-5xl">Entrar em Fila</h1>
+      <h1 className="text-2xl">Entrar em Fila</h1>
       <form onSubmit={handleSubmit} className="flex flex-col gap-16 w-full">
         <div className="w-full flex flex-col gap-4">
           <Input

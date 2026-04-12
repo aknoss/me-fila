@@ -15,7 +15,7 @@ export function HomePage() {
 
   return (
     <Wrapper>
-      <h1 className="text-6xl">Me Fila</h1>
+      <h1 className="text-2xl">Me Fila</h1>
       <ButtonGroup>
         <ButtonLink to={ROUTES.JOIN}>Entrar em Fila</ButtonLink>
         <ButtonLink to={ROUTES.HOST} variant="secondary">

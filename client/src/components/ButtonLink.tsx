@@ -22,7 +22,7 @@ export function ButtonLink({
     return (
       <div
         className={clsx(
-          "rounded-md h-16 flex items-center justify-center",
+          "rounded-md h-12 flex items-center justify-center",
           styles
         )}
       >
@@ -34,8 +34,8 @@ export function ButtonLink({
   return (
     <Link
       className={clsx(
-        "text-center text-3xl cursor-pointer w-full",
-        "rounded-md h-16 flex items-center justify-center",
+        "text-center text-lg cursor-pointer w-full",
+        "rounded-md h-12 flex items-center justify-center",
         styles
       )}
       {...rest}
