@@ -16,7 +16,7 @@ export function HomePage() {
   return (
     <Wrapper>
       <h1 className="text-2xl">Me Fila</h1>
-      <div className="flex flex-col gap-1 text-left">
+      <div className="flex flex-col gap-1 text-center">
         <p>Organize filas de espera de forma simples e rápida.</p>
         <p>
           Crie uma fila em segundos, compartilhe o código com seus convidados e
