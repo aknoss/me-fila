@@ -1,4 +1,5 @@
-import { useRef, useState } from "react"
+import { useEffect, useRef, useState } from "react"
+import { useSearchParams } from "react-router"
 import { Input } from "../../components/Input"
 import { Wrapper } from "../../components/Wrapper"
 import { ButtonLink } from "../../components/ButtonLink"
@@ -17,6 +18,15 @@ export function JoinForm() {
   const [username, setUsername] = useState("")
   const { login } = useAuth()
   const userAccessTokenRef = useRef<string | null>(null)
+
+  const [searchParams] = useSearchParams()
+
+  useEffect(() => {
+    const roomId = searchParams.get("id")
+    if (roomId) {
+      setRoomIdInput(roomId)
+    }
+  }, [searchParams])
 
   const {
     mutateAsync: createUserMutateAsync,
