@@ -11,6 +11,6 @@
     "esModuleInterop": true,
     "resolveJsonModule": true
   },
-  "include": ["src", "generated"],
+  "include": ["src", "generated", "test", "vitest.config.ts"],
   "exclude": ["node_modules", "dist"]
 }

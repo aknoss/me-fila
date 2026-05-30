@@ -11,6 +11,7 @@ import { useAuth } from "../../providers/useAuth"
 import { Role } from "../../providers/AuthProvider.types"
 import Spinner from "../../assets/spinner.svg"
 import { Trash2 } from "lucide-react"
+import { QRCodeSVG } from "qrcode.react"
 
 const ROOM_REFETCH_INTERVAL = 3000
 
@@ -54,6 +55,8 @@ export function HostSession() {
     mutate({ roomId, accessToken })
   }
 
+  const joinUrl = `${window.location.origin}${ROUTES.JOIN}?id=${roomId}`
+
   return (
     <Wrapper>
       <div className="flex items-center gap-3">
@@ -70,6 +73,9 @@ export function HostSession() {
             <Trash2 size={18} />
           )}
         </button>
+      </div>
+      <div className="bg-white p-4 rounded-lg">
+        <QRCodeSVG value={joinUrl} size={180} />
       </div>
       {usersData ? (
         usersData.data.users.length > 0 ? (
