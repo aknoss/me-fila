@@ -6,7 +6,9 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   const [accessToken, setAccessToken] = useState<string | null>(
     localStorage.getItem("accessToken")
   )
-  const [role, setRole] = useState<Role | null>(null)
+  const [role, setRole] = useState<Role | null>(
+    localStorage.getItem("role") as Role | null
+  )
   const [roomId, setRoomId] = useState<string | null>(
     localStorage.getItem("roomId")
   )
@@ -27,6 +29,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     }) => {
       localStorage.setItem("accessToken", newAccessToken)
       localStorage.setItem("roomId", newRoomId)
+      localStorage.setItem("role", newRole)
       setAccessToken(newAccessToken)
       setRole(newRole)
       setRoomId(newRoomId)

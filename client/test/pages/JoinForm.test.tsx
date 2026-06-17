@@ -70,6 +70,14 @@ describe("JoinForm", () => {
     expect(createUserMutateAsync).not.toHaveBeenCalled()
   })
 
+  it("shows error and does not submit when name is empty", async () => {
+    shell()
+    await userEvent.type(screen.getByLabelText("ID da Fila"), "ROOM1")
+    fireEvent.submit(screen.getByRole("button", { name: "Continuar" }).closest("form")!)
+    expect(screen.getByText("Insira seu nome por favor")).toBeInTheDocument()
+    expect(createUserMutateAsync).not.toHaveBeenCalled()
+  })
+
   it("clears error when typing in id field", async () => {
     shell()
     fireEvent.submit(screen.getByRole("button", { name: "Continuar" }).closest("form")!)

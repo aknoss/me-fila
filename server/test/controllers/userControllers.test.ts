@@ -25,6 +25,18 @@ describe("POST /users (createUser)", () => {
     expect(typeof res.body.data.accessToken).toBe("string")
   })
 
+  it("400 when name is missing", async () => {
+    const res = await request(app).post("/users").send({})
+    expect(res.status).toBe(400)
+    expect(mockedExecute).not.toHaveBeenCalled()
+  })
+
+  it("400 when name is blank", async () => {
+    const res = await request(app).post("/users").send({ name: "   " })
+    expect(res.status).toBe(400)
+    expect(mockedExecute).not.toHaveBeenCalled()
+  })
+
   it("400 when insert affects no rows", async () => {
     mockedExecute.mockResolvedValueOnce([{ affectedRows: 0 }, []])
     const res = await request(app).post("/users").send({ name: "Alice" })

@@ -16,6 +16,7 @@ export function JoinForm() {
   const [roomIdInput, setRoomIdInput] = useState("")
   const [roomIdError, setRoomIdError] = useState(false)
   const [username, setUsername] = useState("")
+  const [usernameError, setUsernameError] = useState(false)
   const { login } = useAuth()
   const userAccessTokenRef = useRef<string | null>(null)
 
@@ -57,13 +58,22 @@ export function JoinForm() {
 
   const handleChangeUsername = (event: React.ChangeEvent<HTMLInputElement>) => {
     setUsername(event.target.value)
+    setUsernameError(false)
   }
 
   const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault()
 
+    let hasError = false
     if (roomIdInput === "") {
       setRoomIdError(true)
+      hasError = true
+    }
+    if (username.trim() === "") {
+      setUsernameError(true)
+      hasError = true
+    }
+    if (hasError) {
       return
     }
 
@@ -91,6 +101,8 @@ export function JoinForm() {
           <Input
             id="username"
             label="Seu Nome"
+            isError={usernameError}
+            errorMessage="Insira seu nome por favor"
             value={username}
             onChange={handleChangeUsername}
           />

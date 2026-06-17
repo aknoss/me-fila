@@ -18,6 +18,11 @@ export async function createUser(
   res: CreateUserResponse
 ) {
   const name = req.body.name
+  if (!name || name.trim() === "") {
+    const error = { message: "A name for the user is required", code: 400 }
+    logger.error(error)
+    return res.status(400).json({ data: null, error })
+  }
 
   const id = crypto.randomUUID()
   const [result] = await db.execute<ResultSetHeader>(
