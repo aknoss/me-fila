@@ -4,3 +4,5 @@
 /server/build
 /client/.env
 /server/.env
+/client/coverage
+/server/coverage
