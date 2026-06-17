@@ -2,23 +2,35 @@
 
 Me Fila app is a web application for creating and joining queues. It is a mono repo consisted of:
 
-- Server: restful API built in Node + Express and
+- Server: restful API built in Node + Express
 - Client: app built with React + Vite
+- Shared: TypeScript types shared between client and server (`@me-fila/shared`)
 
 ## Setup
 
+Install dependencies for all workspaces from the repo root:
+
+```
+npm install
+```
+
 ### Client
 
-Run npm install
+Create a `.env` file with the backend URL. Check the `.env.example` file.
 
 ```
 cd client
-npm install
+cp .env.example .env
 ```
 
 ### Server
 
-Create a .env file with a JWT secret and database credentials for MySQL. Check .env.example file.
+Create a `.env` file with a JWT secret and database credentials for MySQL. Check the `.env.example` file.
+
+```
+cd server
+cp .env.example .env
+```
 
 Run migrations
 
@@ -27,27 +39,27 @@ cd server
 npm run migrate
 ```
 
-Run npm install
-
-```
-cd server
-npm install
-```
-
 ## Development
 
-You will need to run both client and server at the same time to make the app work. Navigate into the related repositories and run in separate terminals
-
-### Client
+From the repo root you can start both client and server together:
 
 ```
-cd client
 npm run dev
 ```
 
-### Server
+Or run them individually:
 
 ```
-cd server
-npm run dev
+npm run dev:client
+npm run dev:server
+```
+
+## Testing
+
+Both client and server use Vitest. Run from within each package:
+
+```
+cd client   # or server
+npm test               # run the test suite
+npm run test:coverage  # run with a coverage report
 ```
