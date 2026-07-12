@@ -2,6 +2,7 @@ export type User = {
   id: string;
   name: string;
   room_id?: string;
+  position?: number;
 };
 
 export type Room = {

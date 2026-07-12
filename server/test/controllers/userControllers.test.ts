@@ -79,6 +79,18 @@ describe("GET /users/:id (getUser)", () => {
     expect(res.status).toBe(200)
     expect(res.body.data.id).toBe("u1")
   })
+
+  it("includes queue position when user is in a room", async () => {
+    mockedExecute
+      .mockResolvedValueOnce([[{ id: "u1", name: "Alice", room_id: "abc" }], []])
+      .mockResolvedValueOnce([[{ position: 3 }], []])
+    const token = signUserToken("u1")
+    const res = await request(app)
+      .get("/users/u1")
+      .set("Authorization", `Bearer ${token}`)
+    expect(res.status).toBe(200)
+    expect(res.body.data.position).toBe(3)
+  })
 })
 
 describe("DELETE /users/:id (deleteUser)", () => {

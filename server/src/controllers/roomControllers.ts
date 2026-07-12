@@ -57,6 +57,28 @@ export async function deleteRoom(
   res.status(200).json({ data: null, error: null })
 }
 
+type GetRoomResponse = ApiResponse<Room>
+export async function getRoom(
+  req: Request<{ id: string }>,
+  res: Response<GetRoomResponse>
+) {
+  const roomId = req.params.id
+
+  const [roomRows] = await db.execute<RoomRow[]>(
+    "SELECT id, name FROM rooms WHERE id = ? LIMIT 1",
+    [roomId]
+  )
+  if (!roomRows[0]) {
+    logger.error("Could not find room", { roomId })
+    return res.status(404).json({
+      data: null,
+      error: { message: "Could not find room", code: 404 },
+    })
+  }
+
+  res.status(200).json({ data: roomRows[0], error: null })
+}
+
 type GetRoomUsersResponse = ApiResponse<{ users: User[] }>
 export async function getRoomUsers(
   req: Request<{ id: string }>,
@@ -76,13 +98,21 @@ export async function getRoomUsers(
   }
 
   const [userRows] = await db.execute<UserRow[]>(
-    "SELECT id, name, room_id FROM users WHERE room_id = ?",
+    "SELECT id, name, room_id FROM users WHERE room_id = ? ORDER BY created_at ASC, id ASC",
     [roomId]
   )
 
-  res
-    .status(200)
-    .json({ data: { users: userRows.map(({ id, name, room_id }) => ({ id, name, room_id })) }, error: null })
+  res.status(200).json({
+    data: {
+      users: userRows.map(({ id, name, room_id }, index) => ({
+        id,
+        name,
+        room_id,
+        position: index + 1,
+      })),
+    },
+    error: null,
+  })
 }
 
 type JoinRoomResponse = ApiResponse<User>

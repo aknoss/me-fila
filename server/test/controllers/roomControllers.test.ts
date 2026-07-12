@@ -76,6 +76,24 @@ describe("DELETE /rooms/:id (deleteRoom)", () => {
   })
 })
 
+describe("GET /rooms/:id (getRoom)", () => {
+  it("200 with the room, without requiring auth", async () => {
+    mockedExecute.mockResolvedValueOnce([
+      [{ id: "abc", name: "My Room" }],
+      [],
+    ])
+    const res = await request(app).get("/rooms/abc")
+    expect(res.status).toBe(200)
+    expect(res.body.data).toEqual({ id: "abc", name: "My Room" })
+  })
+
+  it("404 when the room does not exist", async () => {
+    mockedExecute.mockResolvedValueOnce([[], []])
+    const res = await request(app).get("/rooms/abc")
+    expect(res.status).toBe(404)
+  })
+})
+
 describe("GET /rooms/:id/users (getRoomUsers)", () => {
   it("404 when room does not exist", async () => {
     mockedExecute.mockResolvedValueOnce([[], []])
@@ -99,7 +117,28 @@ describe("GET /rooms/:id/users (getRoomUsers)", () => {
       .set("Authorization", `Bearer ${token}`)
     expect(res.status).toBe(200)
     expect(res.body.data.users).toEqual([
-      { id: "u1", name: "Alice", room_id: "abc" },
+      { id: "u1", name: "Alice", room_id: "abc", position: 1 },
+    ])
+  })
+
+  it("assigns 1-based positions in returned order", async () => {
+    mockedExecute
+      .mockResolvedValueOnce([[{ id: "abc" }], []]) // room exists
+      .mockResolvedValueOnce([
+        [
+          { id: "u1", name: "Alice", room_id: "abc" },
+          { id: "u2", name: "Bob", room_id: "abc" },
+        ],
+        [],
+      ])
+    const token = signHostToken("abc")
+    const res = await request(app)
+      .get("/rooms/abc/users")
+      .set("Authorization", `Bearer ${token}`)
+    expect(res.status).toBe(200)
+    expect(res.body.data.users).toEqual([
+      { id: "u1", name: "Alice", room_id: "abc", position: 1 },
+      { id: "u2", name: "Bob", room_id: "abc", position: 2 },
     ])
   })
 })

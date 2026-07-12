@@ -4,7 +4,7 @@ import { logger } from "../logger"
 import { ApiResponse, Role, User } from "@me-fila/shared/types"
 import type { Request, Response } from "express"
 import { db } from "../db"
-import { ResultSetHeader } from "mysql2"
+import { ResultSetHeader, RowDataPacket } from "mysql2"
 import { UserRow } from "../dbTypes"
 
 const JWT_SECRET = getEnv("JWT_SECRET")
@@ -58,7 +58,8 @@ export async function getUser(
     [userId]
   )
 
-  if (!userRows[0]) {
+  const user = userRows[0]
+  if (!user) {
     logger.error("Could not find user", { userId })
     res.status(404).json({
       data: null,
@@ -67,7 +68,17 @@ export async function getUser(
     return
   }
 
-  res.status(200).json({ data: userRows[0], error: null })
+  if (user.room_id) {
+    const [positionRows] = await db.execute<(RowDataPacket & { position: number })[]>(
+      `SELECT COUNT(*) AS position FROM users
+       WHERE room_id = ?
+         AND (created_at, id) <= (SELECT created_at, id FROM users WHERE id = ?)`,
+      [user.room_id, userId]
+    )
+    user.position = positionRows[0]?.position
+  }
+
+  res.status(200).json({ data: user, error: null })
 }
 
 export async function deleteUser(
