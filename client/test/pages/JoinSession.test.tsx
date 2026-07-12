@@ -7,7 +7,10 @@ import { AuthContext } from "../../src/providers/contexts"
 import { makeAuthValue, userValue } from "../helpers/MockAuthProvider"
 import type { AuthContextType } from "../../src/providers/AuthProvider.types"
 
-let userQuery = { isError: false }
+let userQuery: {
+  isError: boolean
+  data?: { data: { position?: number } }
+} = { isError: false }
 const deleteUserMutate = vi.fn()
 let deleteUserOnSuccess: (() => void) | undefined
 
@@ -55,7 +58,11 @@ describe("JoinSession", () => {
   it("renders session info when logged in", () => {
     shell(userValue())
     expect(screen.getByText(/Username: alice/)).toBeInTheDocument()
-    expect(screen.getByText(/ID da fila: r/)).toBeInTheDocument()
+  })
+
+  it("does not expose the queue id to the user", () => {
+    shell(userValue())
+    expect(screen.queryByText(/ID da fila/)).not.toBeInTheDocument()
   })
 
   it("logs out + deletes user when Sair clicked", async () => {
@@ -73,5 +80,25 @@ describe("JoinSession", () => {
     userQuery = { isError: true }
     shell(userValue())
     expect(logoutSpy).toHaveBeenCalled()
+  })
+
+  it("shows how many people are ahead when waiting", () => {
+    userQuery = { isError: false, data: { data: { position: 4 } } }
+    shell(userValue())
+    expect(screen.getByText("3")).toBeInTheDocument()
+    expect(screen.getByText("pessoas na sua frente")).toBeInTheDocument()
+  })
+
+  it("uses the singular wording when only one person is ahead", () => {
+    userQuery = { isError: false, data: { data: { position: 2 } } }
+    shell(userValue())
+    expect(screen.getByText("1")).toBeInTheDocument()
+    expect(screen.getByText("pessoa na sua frente")).toBeInTheDocument()
+  })
+
+  it("shows 'it's your turn' when first in line", () => {
+    userQuery = { isError: false, data: { data: { position: 1 } } }
+    shell(userValue())
+    expect(screen.getByText("É a sua vez!")).toBeInTheDocument()
   })
 })

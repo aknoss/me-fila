@@ -6,6 +6,7 @@ import { AuthProvider } from "../src/providers/AuthProvider"
 vi.mock("../src/pages/home", () => ({ HomePage: () => <div>HOME</div> }))
 vi.mock("../src/pages/host", () => ({ HostPage: () => <div>HOST</div> }))
 vi.mock("../src/pages/join", () => ({ JoinPage: () => <div>JOIN</div> }))
+vi.mock("../src/pages/room", () => ({ RoomPage: () => <div>ROOM</div> }))
 
 import { AppRoutes } from "../src/AppRoutes"
 
@@ -37,6 +38,12 @@ describe("AppRoutes", () => {
     window.history.pushState({}, "", "/join")
     shell()
     expect(screen.getByText("JOIN")).toBeInTheDocument()
+  })
+
+  it("renders the room share page at /room/:id", () => {
+    window.history.pushState({}, "", "/room/abc")
+    shell()
+    expect(screen.getByText("ROOM")).toBeInTheDocument()
   })
 
   it("redirects unknown routes to /", () => {

@@ -8,14 +8,11 @@ import { makeAuthValue, hostValue } from "../helpers/MockAuthProvider"
 import type { AuthContextType } from "../../src/providers/AuthProvider.types"
 
 vi.mock("../../src/api/roomApi", () => ({
+  useGetRoomQuery: () => ({ data: { data: { id: "r", name: "Minha Fila" } } }),
   useGetRoomUsersQuery: () => ({ data: undefined, isError: false, refetch: () => {} }),
   useDeleteRoomMutation: () => ({ mutate: () => {}, isPending: false, isError: false }),
   useRemoveUserFromRoomMutation: () => ({ mutate: () => {} }),
   useCreateRoomMutation: () => ({ mutate: () => {}, isPending: false, isError: false }),
-}))
-
-vi.mock("qrcode.react", () => ({
-  QRCodeSVG: () => <svg data-testid="qr" />,
 }))
 
 function shell(value: Partial<AuthContextType> = {}) {
@@ -41,6 +38,8 @@ describe("HostPage", () => {
 
   it("renders HostSession when host is authenticated", () => {
     shell(hostValue())
-    expect(screen.getByText(/Id da fila:/)).toBeInTheDocument()
+    expect(
+      screen.getByRole("button", { name: /Compartilhar/ })
+    ).toBeInTheDocument()
   })
 })

@@ -13,6 +13,10 @@ let usersQuery: {
   refetch: () => void
 } = { data: undefined, isError: false, refetch: vi.fn() }
 
+let roomQuery: { data: { data: { id: string; name: string } } | undefined } = {
+  data: { data: { id: "r", name: "Minha Fila" } },
+}
+
 const removeUserMock = vi.fn()
 const deleteRoomMutate = vi.fn()
 let deleteRoomState: {
@@ -23,6 +27,7 @@ let deleteRoomState: {
 } = { isPending: false, isError: false }
 
 vi.mock("../../src/api/roomApi", () => ({
+  useGetRoomQuery: () => roomQuery,
   useGetRoomUsersQuery: () => usersQuery,
   useRemoveUserFromRoomMutation: () => ({ mutate: removeUserMock }),
   useDeleteRoomMutation: (opts: {
@@ -37,10 +42,6 @@ vi.mock("../../src/api/roomApi", () => ({
       isError: deleteRoomState.isError,
     }
   },
-}))
-
-vi.mock("qrcode.react", () => ({
-  QRCodeSVG: () => <svg data-testid="qr" />,
 }))
 
 import { HostSession } from "../../src/pages/host/HostSession"
@@ -65,6 +66,7 @@ function shell(value: Partial<AuthContextType>) {
 
 beforeEach(() => {
   usersQuery = { data: undefined, isError: false, refetch: vi.fn() }
+  roomQuery = { data: { data: { id: "r", name: "Minha Fila" } } }
   removeUserMock.mockReset()
   deleteRoomMutate.mockReset()
   deleteRoomState = { isPending: false, isError: false }
@@ -77,10 +79,27 @@ describe("HostSession", () => {
     expect(container.textContent).toContain("HOME")
   })
 
-  it("renders QR and room id when authenticated", () => {
+  it("renders the queue title and does not expose id or QR", () => {
     shell(hostValue())
-    expect(screen.getByText(/Id da fila:/)).toBeInTheDocument()
-    expect(screen.getByTestId("qr")).toBeInTheDocument()
+    expect(screen.getByRole("heading", { name: "Minha Fila" })).toBeInTheDocument()
+    expect(screen.queryByText(/Id da fila:/)).not.toBeInTheDocument()
+    expect(screen.queryByTestId("qr")).not.toBeInTheDocument()
+  })
+
+  it("share button copies the room url and opens it in a new tab", async () => {
+    const writeText = vi.fn().mockResolvedValue(undefined)
+    Object.assign(navigator, { clipboard: { writeText } })
+    const openSpy = vi.spyOn(window, "open").mockImplementation(() => null)
+    shell(hostValue())
+    await userEvent.click(screen.getByRole("button", { name: /Compartilhar/ }))
+    const expectedUrl = `${window.location.origin}/room/r`
+    expect(openSpy).toHaveBeenCalledWith(
+      expectedUrl,
+      "_blank",
+      "noopener,noreferrer"
+    )
+    expect(writeText).toHaveBeenCalledWith(expectedUrl)
+    openSpy.mockRestore()
   })
 
   it("renders empty list message when no users", () => {
@@ -90,10 +109,10 @@ describe("HostSession", () => {
       refetch: vi.fn(),
     }
     shell(hostValue())
-    expect(screen.getByText("A lista está vazia")).toBeInTheDocument()
+    expect(screen.getByText("A fila está vazia")).toBeInTheDocument()
   })
 
-  it("renders users and removes one", async () => {
+  it("first user is being attended: no remove button, has finish button", async () => {
     usersQuery = {
       data: { data: { users: [{ id: "u1", name: "Alice" }] } },
       isError: false,
@@ -101,12 +120,77 @@ describe("HostSession", () => {
     }
     shell(hostValue())
     expect(screen.getByText("Alice")).toBeInTheDocument()
-    await userEvent.click(screen.getByText("✕"))
+    expect(screen.queryByLabelText("Remover Alice")).not.toBeInTheDocument()
+    await userEvent.click(screen.getByText("Finalizar atendimento"))
     expect(removeUserMock).toHaveBeenCalledWith({
       roomId: "r",
       userId: "u1",
       accessToken: "t",
     })
+  })
+
+  it("removing a waiting user asks for confirmation first", async () => {
+    usersQuery = {
+      data: {
+        data: {
+          users: [
+            { id: "u1", name: "Alice" },
+            { id: "u2", name: "Bob" },
+          ],
+        },
+      },
+      isError: false,
+      refetch: vi.fn(),
+    }
+    shell(hostValue())
+    await userEvent.click(screen.getByLabelText("Remover Bob"))
+    // not removed until confirmed
+    expect(removeUserMock).not.toHaveBeenCalled()
+    expect(screen.getByRole("dialog")).toBeInTheDocument()
+    await userEvent.click(screen.getByRole("button", { name: "Remover" }))
+    expect(removeUserMock).toHaveBeenCalledWith({
+      roomId: "r",
+      userId: "u2",
+      accessToken: "t",
+    })
+  })
+
+  it("cancelling the confirmation does not remove the user", async () => {
+    usersQuery = {
+      data: {
+        data: {
+          users: [
+            { id: "u1", name: "Alice" },
+            { id: "u2", name: "Bob" },
+          ],
+        },
+      },
+      isError: false,
+      refetch: vi.fn(),
+    }
+    shell(hostValue())
+    await userEvent.click(screen.getByLabelText("Remover Bob"))
+    await userEvent.click(screen.getByRole("button", { name: "Cancelar" }))
+    expect(removeUserMock).not.toHaveBeenCalled()
+    expect(screen.queryByRole("dialog")).not.toBeInTheDocument()
+  })
+
+  it("shows queue positions", () => {
+    usersQuery = {
+      data: {
+        data: {
+          users: [
+            { id: "u1", name: "Alice" },
+            { id: "u2", name: "Bob" },
+          ],
+        },
+      },
+      isError: false,
+      refetch: vi.fn(),
+    }
+    shell(hostValue())
+    expect(screen.getByText(/1\./)).toBeInTheDocument()
+    expect(screen.getByText(/2\./)).toBeInTheDocument()
   })
 
   it("deletes the queue when trash button clicked", async () => {

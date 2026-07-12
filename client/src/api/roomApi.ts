@@ -59,6 +59,24 @@ export function useDeleteRoomMutation(
   })
 }
 
+const GET_ROOM_QUERY_KEY = "get-room-query-key"
+
+type useGetRoomQuerySuccessResponse = ApiSuccessResponse<Room>
+export function useGetRoomQuery(
+  roomId: string,
+  options?: UseQueryOptions<useGetRoomQuerySuccessResponse, ApiErrorResponse>
+) {
+  return useQuery<useGetRoomQuerySuccessResponse, ApiErrorResponse>({
+    ...options,
+    queryKey: [GET_ROOM_QUERY_KEY, roomId],
+    queryFn: () =>
+      fetchData({
+        url: `${API_ROUTES.ROOMS}/${roomId}`,
+        method: API_METHOD.GET,
+      }),
+  })
+}
+
 const GET_ROOM_USERS_QUERY_KEY = "get-room-users-query-key"
 
 type useGetRoomUsersQuerySuccessResponse = ApiSuccessResponse<{ users: User[] }>

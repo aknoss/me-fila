@@ -14,7 +14,7 @@ describe("constants", () => {
     expect(ROUTES.HOME).toBe("/")
     expect(ROUTES.HOST).toBe("/host")
     expect(ROUTES.JOIN).toBe("/join")
-    expect(ROUTES.HOST_ID).toBe("/host/:id")
+    expect(ROUTES.ROOM).toBe("/room/:id")
   })
 
   it("API_METHOD enum", () => {

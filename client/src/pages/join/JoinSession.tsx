@@ -10,15 +10,21 @@ import { Role } from "../../providers/AuthProvider.types"
 const USER_REFETCH_INTERVAL = 3000
 
 export function JoinSession() {
-  const { accessToken, role, username, roomId, userId, logout } = useAuth()
+  const { accessToken, role, username, userId, logout } = useAuth()
 
-  const { isError: isUserGone } = useGetUserQuery(userId!, accessToken!, {
-    queryKey: [],
-    refetchInterval: USER_REFETCH_INTERVAL,
-    refetchIntervalInBackground: false,
-    enabled: !!userId && !!accessToken,
-    retry: false,
-  })
+  const { data: userData, isError: isUserGone } = useGetUserQuery(
+    userId!,
+    accessToken!,
+    {
+      queryKey: [],
+      refetchInterval: USER_REFETCH_INTERVAL,
+      refetchIntervalInBackground: false,
+      enabled: !!userId && !!accessToken,
+      retry: false,
+    }
+  )
+
+  const position = userData?.data.position
 
   useEffect(() => {
     if (isUserGone) {
@@ -42,10 +48,28 @@ export function JoinSession() {
 
   return (
     <Wrapper>
-      JOIN SESSION
       <p>Username: {username}</p>
+      <div className="flex flex-col items-center gap-2 bg-section px-8 py-6 rounded-lg">
+        {position === 1 ? (
+          <p className="text-primary text-2xl font-semibold">
+            É a sua vez!
+          </p>
+        ) : position ? (
+          <>
+            <span className="text-primary text-5xl font-semibold">
+              {position - 1}
+            </span>
+            <span className="opacity-70">
+              {position - 1 === 1
+                ? "pessoa na sua frente"
+                : "pessoas na sua frente"}
+            </span>
+          </>
+        ) : (
+          <span className="opacity-70">Aguardando a fila...</span>
+        )}
+      </div>
       <Button onClick={logoutAndDeleteUser}>Sair</Button>
-      <p>ID da fila: {roomId}</p>
     </Wrapper>
   )
 }
