@@ -1,24 +1,29 @@
 import "dotenv/config"
-import express, { Response } from "express"
+import express from "express"
 import cors from "cors"
+import fs from "fs"
+import path from "path"
+import { fileURLToPath } from "url"
 import { roomRoutes } from "./routes/roomRoutes"
-import { ApiResponse } from "@me-fila/shared/types"
 import { userRoutes } from "./routes/userRoutes"
 import { errorHandler } from "./middleware/errorHandler"
 
-const PORT = 5000
+const PORT = process.env.PORT || 3000
 const app = express()
 app.use(express.json())
 app.use(cors())
 app.use("/rooms", roomRoutes)
 app.use("/users", userRoutes)
 
-app.get("/", (_req, res: Response<ApiResponse<{ message: string }>>) => {
-  res.json({
-    data: { message: "Welcome to the Me Fila API. Check docs for how to use." },
-    error: null,
+// Serve the built client (produced by `npm run build`) from "/".
+const __dirname = path.dirname(fileURLToPath(import.meta.url))
+const clientDir = path.join(__dirname, "../public")
+if (fs.existsSync(path.join(clientDir, "index.html"))) {
+  app.use(express.static(clientDir))
+  app.get("*", (_req, res) => {
+    res.sendFile(path.join(clientDir, "index.html"))
   })
-})
+}
 
 app.use(errorHandler)
 

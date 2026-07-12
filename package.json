@@ -9,7 +9,9 @@
   "scripts": {
     "dev:client": "cd client && npm run dev",
     "dev:server": "cd server && npm run dev",
-    "dev": "concurrently \"npm run dev:client\" \"npm run dev:server\""
+    "dev": "concurrently \"npm run dev:client\" \"npm run dev:server\"",
+    "build": "npm run build -w client && npm run migrate -w server",
+    "start": "npm run start -w server"
   },
   "devDependencies": {
     "concurrently": "^9.2.1"

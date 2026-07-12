@@ -1,6 +1,6 @@
-import { getEnv } from "../env"
-
-const BACKEND_URL = getEnv("VITE_BACKEND_URL")
+// Empty by default so the built client talks to the same origin it is served
+// from. In development VITE_BACKEND_URL points at the standalone API server.
+const BACKEND_URL = import.meta.env.VITE_BACKEND_URL ?? ""
 
 export enum API_METHOD {
   GET = "GET",

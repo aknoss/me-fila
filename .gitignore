@@ -2,6 +2,7 @@
 /client/node_modules
 /server/node_modules
 /server/build
+/server/public
 /client/.env
 /server/.env
 /client/coverage

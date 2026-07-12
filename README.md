@@ -54,6 +54,26 @@ npm run dev:client
 npm run dev:server
 ```
 
+## Build & Production
+
+Build the client and run database migrations from the repo root:
+
+```
+npm run build
+```
+
+This builds the React client into `server/public` and runs the pending
+migrations against the database configured in `server/.env`.
+
+Then start the server, which serves both the API and the built client from the
+same origin (`/`):
+
+```
+npm run start
+```
+
+The server listens on `PORT` (defaults to `3000`).
+
 ## Testing
 
 Both client and server use Vitest. Run from within each package:

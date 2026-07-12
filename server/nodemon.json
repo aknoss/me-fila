@@ -2,5 +2,8 @@
   "watch": ["src"],
   "ext": ".ts,.js",
   "ignore": [],
+  "env": {
+    "PORT": "5000"
+  },
   "exec": "tsx ./src/index.ts"
 }

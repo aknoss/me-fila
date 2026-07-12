@@ -8,4 +8,9 @@ export default defineConfig({
   server: {
     port: 3000,
   },
+  build: {
+    // Output the built client into the server so it can be served from "/".
+    outDir: "../server/public",
+    emptyOutDir: true,
+  },
 })
