@@ -32,12 +32,44 @@ cd server
 cp .env.example .env
 ```
 
-Run migrations
+### Database
+
+The API uses MySQL. The migrations create the tables, but you must create the
+database and a user first.
+
+1. Install and start MySQL locally (or provision a managed instance).
+
+2. Create the database and a user (adjust the name/password as you like):
+
+```sql
+CREATE DATABASE me_fila;
+CREATE USER 'me_fila'@'localhost' IDENTIFIED BY 'your_password';
+GRANT ALL PRIVILEGES ON me_fila.* TO 'me_fila'@'localhost';
+FLUSH PRIVILEGES;
+```
+
+Use `'me_fila'@'%'` instead of `'localhost'` if the database is on a different
+host than the server.
+
+3. Fill `server/.env` with the matching values:
+
+```
+JWT_SECRET=a-long-random-string
+DATABASE_HOST=127.0.0.1
+DATABASE_PORT=3306
+DATABASE_USER=me_fila
+DATABASE_PASSWORD=your_password
+DATABASE_NAME=me_fila
+```
+
+4. Run the migrations to create the tables:
 
 ```
 cd server
 npm run migrate
 ```
+
+To undo the latest migration, run `npm run rollback`.
 
 ## Development
 
