@@ -118,5 +118,13 @@ describe("AuthProvider", () => {
       screen.getByText("logout").click()
     })
     expect(screen.getByTestId("token").textContent).toBe("none")
+    act(() => {
+      screen.getByText("login-host").click()
+    })
+    expect(screen.getByTestId("token").textContent).toBe("none")
+    act(() => {
+      screen.getByText("login-user").click()
+    })
+    expect(screen.getByTestId("token").textContent).toBe("none")
   })
 })

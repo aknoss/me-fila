@@ -1,0 +1,19 @@
+services:
+  mysql-test:
+    image: mysql:8.0
+    container_name: mefila-mysql-test
+    environment:
+      MYSQL_ROOT_PASSWORD: testroot
+      MYSQL_DATABASE: mefila_test
+      MYSQL_USER: mefila-test-user
+      MYSQL_PASSWORD: testpassword
+    ports:
+      - "3307:3306"
+    healthcheck:
+      test: ["CMD", "mysqladmin", "ping", "-h", "127.0.0.1", "-u", "mefila-test-user", "-ptestpassword"]
+      interval: 5s
+      timeout: 5s
+      retries: 10
+      start_period: 15s
+    tmpfs:
+      - /var/lib/mysql

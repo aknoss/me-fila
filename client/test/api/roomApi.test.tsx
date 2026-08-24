@@ -5,6 +5,7 @@ import * as fetchModule from "../../src/api/fetchData"
 import {
   useCreateRoomMutation,
   useDeleteRoomMutation,
+  useGetRoomQuery,
   useGetRoomUsersQuery,
   useJoinRoomMutation,
   useRemoveUserFromRoomMutation,
@@ -100,6 +101,20 @@ describe("roomApi hooks", () => {
       url: "http://test.local/rooms/abc/users/u",
       method: "DELETE",
       accessToken: "t",
+    })
+  })
+
+  it("useGetRoomQuery hits GET /rooms/:id", async () => {
+    const spy = vi
+      .spyOn(fetchModule, "fetchData")
+      .mockResolvedValue({ data: { id: "abc", name: "R" }, error: null })
+    const { result } = renderHook(() => useGetRoomQuery("abc"), {
+      wrapper: wrapper(),
+    })
+    await waitFor(() => expect(result.current.isSuccess).toBe(true))
+    expect(spy).toHaveBeenCalledWith({
+      url: "http://test.local/rooms/abc",
+      method: "GET",
     })
   })
 })

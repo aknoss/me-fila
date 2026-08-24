@@ -60,4 +60,16 @@ describe("RoomPage", () => {
     shell()
     expect(screen.getByText("Fila não encontrada")).toBeInTheDocument()
   })
+
+  it("shows spinner when loading", () => {
+    roomQuery = { data: undefined, isLoading: true, isError: false }
+    const { container } = shell()
+    expect(container.querySelector("img")).toBeInTheDocument()
+  })
+
+  it("shows error when data is missing without isError", () => {
+    roomQuery = { data: undefined, isLoading: false, isError: false }
+    shell()
+    expect(screen.getByText("Fila não encontrada")).toBeInTheDocument()
+  })
 })

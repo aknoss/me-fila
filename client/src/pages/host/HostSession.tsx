@@ -161,12 +161,11 @@ export function HostSession() {
           <p>A fila está vazia</p>
         )
       ) : null}
-      {isGetUsersError ||
-        (isDeleteRoomError && (
+      {(isGetUsersError || isDeleteRoomError) && (
           <ErrorMessage>
             Algo deu errado. Por favor tente novamente
           </ErrorMessage>
-        ))}
+        )}
       {userPendingRemoval && (
         <ConfirmModal
           title="Remover da fila"

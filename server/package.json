@@ -9,6 +9,9 @@
     "test": "vitest run",
     "test:watch": "vitest",
     "test:coverage": "vitest run --coverage",
+    "test:integration": "vitest run --config vitest.integration.config.ts",
+    "test:integration:coverage": "vitest run --config vitest.integration.config.ts --coverage",
+    "test:integration:docker": "docker compose -f ../docker-compose.test.yml up -d --wait && vitest run --config vitest.integration.config.ts --coverage; EXIT_CODE=$?; docker compose -f ../docker-compose.test.yml down -v; exit $EXIT_CODE",
     "format": "npx prettier . --write",
     "migrate": "knex migrate:latest --env production",
     "rollback": "knex migrate:rollback --env production"

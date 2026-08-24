@@ -29,7 +29,14 @@ let deleteRoomState: {
 vi.mock("../../src/api/roomApi", () => ({
   useGetRoomQuery: () => roomQuery,
   useGetRoomUsersQuery: () => usersQuery,
-  useRemoveUserFromRoomMutation: () => ({ mutate: removeUserMock }),
+  useRemoveUserFromRoomMutation: (opts: { onSuccess?: () => void } = {}) => {
+    return {
+      mutate: (...args: unknown[]) => {
+        ;(removeUserMock as unknown as (...a: unknown[]) => void)(...args)
+        opts.onSuccess?.()
+      },
+    }
+  },
   useDeleteRoomMutation: (opts: {
     onSuccess?: () => void
     onError?: (err: { error: { code: number } }) => void
@@ -235,5 +242,38 @@ describe("HostSession", () => {
     deleteRoomState.isError = true
     shell(hostValue())
     expect(screen.getByText(/Algo deu errado/)).toBeInTheDocument()
+  })
+
+  it("shows error banner when getUsers fails", () => {
+    usersQuery = {
+      data: undefined,
+      isError: true,
+      refetch: vi.fn(),
+    }
+    shell(hostValue())
+    expect(screen.getByText(/Algo deu errado/)).toBeInTheDocument()
+  })
+
+  it("calls refetchUsers after successful remove", async () => {
+    const refetchSpy = vi.fn()
+    usersQuery = {
+      data: { data: { users: [{ id: "u1", name: "Alice" }] } },
+      isError: false,
+      refetch: refetchSpy,
+    }
+    shell(hostValue())
+    await userEvent.click(screen.getByText("Finalizar atendimento"))
+    expect(removeUserMock).toHaveBeenCalled()
+    expect(refetchSpy).toHaveBeenCalled()
+  })
+
+  it("handleShare copies and shows feedback", async () => {
+    const writeText = vi.fn().mockResolvedValue(undefined)
+    Object.assign(navigator, { clipboard: { writeText } })
+    const openSpy = vi.spyOn(window, "open").mockImplementation(() => null)
+    shell(hostValue())
+    await userEvent.click(screen.getByRole("button", { name: /Compartilhar/ }))
+    expect(await screen.findByText("Link copiado!")).toBeInTheDocument()
+    openSpy.mockRestore()
   })
 })

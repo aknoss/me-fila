@@ -4,9 +4,10 @@ export default defineConfig({
   test: {
     environment: "node",
     globals: false,
-    setupFiles: ["./test/setup.ts"],
-    include: ["test/**/*.test.ts"],
-    exclude: ["test/integration/**"],
+    setupFiles: ["./test/integration/setup.ts"],
+    include: ["test/integration/**/*.test.ts"],
+    testTimeout: 30000,
+    hookTimeout: 30000,
     coverage: {
       provider: "v8",
       reporter: ["text", "html"],
